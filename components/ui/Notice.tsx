@@ -58,7 +58,7 @@ const ANNOUNCEMENTS: Announcement[] = [
 
 export default function LatestAnnouncements() {
   return (
-    <section className="w-full max-w-7xl mx-auto my-8 font-sans antialiased">
+    <section className="w-full bg-[#f6f9fc] py-12 px-4 sm:px-6 lg:px-8 select-none">
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[380px]">
         {/* Left Branding Panel (5 Cols) */}
         <div className="md:col-span-5 p-8 md:p-12 bg-slate-50/50 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200/60">
@@ -121,7 +121,7 @@ export default function LatestAnnouncements() {
           </div>
 
           {/* Right Orange Accent Line Indicator */}
-          <div className="hidden md:block absolute right-0 top-6 bottom-6 w-1 bg-gradient-to-b from-orange-600 via-orange-500 to-slate-200 rounded-l-full" />
+          <div className="hidden md:block absolute right-0 top-6 bottom-6 w-1  to-slate-200 rounded-l-full" />
 
           {/* Footer Action Button */}
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-start">

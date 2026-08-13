@@ -47,7 +47,7 @@ export default function SpotlightAlumni() {
   const [activeNewsId, setActiveNewsId] = useState<number>(1);
 
   return (
-    <section className="w-full max-w-7xl mx-auto font-sans antialiased my-8">
+    <section className="w-full bg-[#f6f9fc] py-12 px-4 sm:px-6 lg:px-8 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-12 overflow-hidden shadow-sm border border-slate-200/80 rounded-2xl bg-white">
         {/* Left Column: In Spotlight News Feed (5 Cols) */}
         <div className="lg:col-span-5 p-6 md:p-10 bg-slate-50/60 flex flex-col justify-between">

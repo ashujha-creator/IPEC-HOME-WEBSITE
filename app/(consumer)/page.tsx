@@ -9,6 +9,8 @@ import InnovationHub from "@/components/ui/InnovationHub";
 import SpotlightAlumni from "@/components/ui/SpotlightAlumni";
 import Notice from "@/components/ui/Notice";
 import EventsSection from "@/components/ui/EventsSection";
+import Footer from "../../components/ui/fotter";
+import LifeGallery from "@/components/ui/gallery";
 export default function Home() {
   return (
     <>
@@ -24,6 +26,8 @@ export default function Home() {
         <SpotlightAlumni />
         <Notice />
         <EventsSection />
+        <LifeGallery />
+        <Footer />
       </main>
     </>
   );

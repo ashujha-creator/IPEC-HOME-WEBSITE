@@ -70,7 +70,7 @@ export default function OurStrength() {
   ];
 
   return (
-    <section className="py-12 bg-[#eaf0f6] overflow-hidden select-none">
+    <section className=" py-12 w-full px-4 sm:px-6 lg:px-8 bg-[#eaf0f6] overflow-hidden select-none">
       {/* Inject Keyframe Animation directly so you don't need tailwind.config */}
       <style jsx global>{`
         @keyframes marquee {
@@ -86,8 +86,8 @@ export default function OurStrength() {
         }
       `}</style>
 
-      <div className="max-w-7xl mx-auto px-6 mb-8">
-        <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+      <div className="max-w-7xl mx-auto px-4 mb-8">
+        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-6">
           Our Strength
         </h2>
       </div>

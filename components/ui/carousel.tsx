@@ -83,7 +83,7 @@ export default function ImageCarousel() {
 
   return (
     <div
-      className="relative w-full max-w-6xl mx-auto px-4 py-6 group"
+      className="relative w-full max-w-7xl mx-auto px-2 py-6 group"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >

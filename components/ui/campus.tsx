@@ -72,9 +72,9 @@ export default function CampusAndAccreditations() {
       `}</style>
 
       <div className="max-w-7xl mx-auto space-y-12">
-        {/* ================= COMPONENT 1: IPEC CAMPUS ================= */}
+        {/* ================= COMPONENT 1: IPEC CAMPUS ================= text-3xl font-extrabold text-slate-900 tracking-tight */}
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">
+          <h2 className=" text-3xl font-extrabold text-slate-900 mb-6 tracking-tight">
             IPEC Campus
           </h2>
 

@@ -43,19 +43,19 @@ export default function AnnouncementBanner({
   label = "Important Announcements:",
 }: AnnouncementBannerProps) {
   return (
-    <div className="w-full bg-slate-50 border-y border-slate-200/80 text-slate-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-2.5 text-sm">
+    <div className="w-full bg-slate-50 border-y border-slate-200/80 text-slate-800 shadow-sm overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+        <div className="flex items-center justify-between py-2.5 text-sm  ">
           {/* Main Content Area */}
-          <div className="flex items-center space-x-3 overflow-x-auto no-scrollbar py-0.5">
+          <div className="flex items-center space-x-3 overflow-x-auto no-scrollbar py-0.5   ">
             {/* Header / Icon */}
-            <div className="flex items-center space-x-2 shrink-0 font-semibold text-slate-900 bg-slate-200/60 px-2.5 py-1 rounded-md border border-slate-300/50">
-              <Megaphone className="w-4 h-4 text-blue-600 animate-pulse" />
-              <span className="whitespace-nowrap">{label}</span>
-            </div>
 
             {/* Announcement Items */}
-            <div className="flex items-center space-x-6 shrink-0 divide-x divide-slate-300">
+            <div className="flex items-center space-x-6 shrink-0 divide-x divide-slate-300 animate-marquee">
+              <div className="flex items-center space-x-2 shrink-0 font-semibold text-slate-900 bg-slate-200/60 px-2.5 py-1 rounded-md border border-slate-300/50 ">
+                <Megaphone className="w-4 h-4 text-blue-600 animate-pulse" />
+                <span className="whitespace-nowrap">{label}</span>
+              </div>
               {announcements.map((item, idx) => {
                 const LinkIcon = item.isExternal ? ExternalLink : ArrowRight;
                 return (

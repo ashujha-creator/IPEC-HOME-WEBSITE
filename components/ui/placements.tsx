@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import React from "react";
+import { ArrowRight } from "lucide-react";
 
 interface HighlightCard {
   id: string;
@@ -13,45 +13,45 @@ interface HighlightCard {
 
 const highlightsData: HighlightCard[] = [
   {
-    id: 'highest-package',
-    value: '₹ 94.25 Lacs',
-    title: 'Highest Package',
-    subtitle: 'Offered by LinkedIn',
-    bgColor: 'bg-[#98e2e6]', // Light Cyan
+    id: "highest-package",
+    value: "₹ 94.25 Lacs",
+    title: "Highest Package",
+    subtitle: "Offered by LinkedIn",
+    bgColor: "bg-[#98e2e6]", // Light Cyan
   },
   {
-    id: 'companies-visited',
-    value: '433+',
-    title: 'Companies Visited',
-    subtitle: '(2026)',
-    bgColor: 'bg-[#ffd3c4]', // Soft Peach
+    id: "companies-visited",
+    value: "433+",
+    title: "Companies Visited",
+    subtitle: "(2026)",
+    bgColor: "bg-[#ffd3c4]", // Soft Peach
   },
   {
-    id: 'placements-offered',
-    value: '1124+',
-    title: 'Placements & Internship',
-    subtitle: 'Offered (Accumulated)',
-    bgColor: 'bg-[#fbe7be]', // Soft Yellow
+    id: "placements-offered",
+    value: "1124+",
+    title: "Placements & Internship",
+    subtitle: "Offered (Accumulated)",
+    bgColor: "bg-[#fbe7be]", // Soft Yellow
   },
   {
-    id: 'highest-stipend',
-    value: '₹ 1.88 Lacs',
-    title: 'Highest Internship Stipend',
-    subtitle: 'Offered by Uber',
-    bgColor: 'bg-[#cbeffd]', // Soft Ice Blue
+    id: "highest-stipend",
+    value: "₹ 1.88 Lacs",
+    title: "Highest Internship Stipend",
+    subtitle: "Offered by Uber",
+    bgColor: "bg-[#cbeffd]", // Soft Ice Blue
   },
 ];
 
 const recruiters = [
-  { name: 'Innovaccer', fontStyle: 'font-bold tracking-tight text-slate-800' },
-  { name: 'TCS', fontStyle: 'font-extrabold text-red-600 tracking-wider' },
-  { name: 'LifeCell', fontStyle: 'font-semibold text-purple-700' },
-  { name: 'PepsiCo', fontStyle: 'font-black text-blue-800 italic' },
-  { name: 'Deloitte.', fontStyle: 'font-extrabold text-black' },
-  { name: 'Goldman Sachs', fontStyle: 'font-bold text-sky-600' },
-  { name: 'Google', fontStyle: 'font-bold text-blue-600' },
-  { name: 'Microsoft', fontStyle: 'font-bold text-slate-700' },
-  { name: 'Amazon', fontStyle: 'font-extrabold text-amber-600' },
+  { name: "Innovaccer", fontStyle: "font-bold tracking-tight text-slate-800" },
+  { name: "TCS", fontStyle: "font-extrabold text-red-600 tracking-wider" },
+  { name: "LifeCell", fontStyle: "font-semibold text-purple-700" },
+  { name: "PepsiCo", fontStyle: "font-black text-blue-800 italic" },
+  { name: "Deloitte.", fontStyle: "font-extrabold text-black" },
+  { name: "Goldman Sachs", fontStyle: "font-bold text-sky-600" },
+  { name: "Google", fontStyle: "font-bold text-blue-600" },
+  { name: "Microsoft", fontStyle: "font-bold text-slate-700" },
+  { name: "Amazon", fontStyle: "font-extrabold text-amber-600" },
 ];
 
 export default function PlacementHighlights() {
@@ -63,8 +63,12 @@ export default function PlacementHighlights() {
       {/* Self-contained Keyframe style injection */}
       <style jsx global>{`
         @keyframes recruiterMarquee {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-33.333%); }
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-33.333%);
+          }
         }
         .animate-recruiter-scroll {
           animation: recruiterMarquee 22s linear infinite;
@@ -73,7 +77,7 @@ export default function PlacementHighlights() {
 
       <div className="max-w-7xl mx-auto space-y-10">
         {/* ================= HEADER SECTION ================= */}
-        <div>
+        <div className="max-w-7xl mx-auto px-4 mb-8">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
             Placement
           </h2>
@@ -81,7 +85,9 @@ export default function PlacementHighlights() {
             Highlights
           </h3>
           <p className="text-xs sm:text-sm text-slate-500 mt-3 max-w-5xl leading-relaxed">
-            With our excellent placement record, you can land your dream role. Top employers recruit from IPEC, offering top salary packages and establishing a lucrative career ahead
+            With our excellent placement record, you can land your dream role.
+            Top employers recruit from IPEC, offering top salary packages and
+            establishing a lucrative career ahead
           </p>
         </div>
 
@@ -112,7 +118,7 @@ export default function PlacementHighlights() {
           <div className="flex flex-col lg:flex-row lg:items-center gap-6">
             {/* Left Header Label */}
             <div className="flex-shrink-0 w-48">
-              <h4 className="text-xl font-bold text-slate-900 leading-tight">
+              <h4 className="text-2xl font-extrabold text-slate-900 leading-tight">
                 Key Recruiters
               </h4>
               <p className="text-xs text-slate-500 font-medium">

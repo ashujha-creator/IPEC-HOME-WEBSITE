@@ -129,7 +129,7 @@ export default function CampusAndAccreditations() {
         <div className="relative flex items-center">
           {/* Scrolling Marquee Container */}
           <div className="group w-full overflow-hidden py-2">
-            <div className="flex w-max space-x-4 animate-logo-scroll group-hover:[animation-play-state:paused]">
+            <div className="flex w-max space-x-4 animate-logo-scroll group-hover:paused">
               {marqueeItems.map((item, index) => (
                 <div
                   key={`${item.id}-${index}`}

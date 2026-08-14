@@ -73,8 +73,8 @@ export default function CampusAndAccreditations() {
 
       <div className="max-w-7xl mx-auto space-y-12">
         {/* ================= COMPONENT 1: IPEC CAMPUS ================= text-3xl font-extrabold text-slate-900 tracking-tight */}
-        <div>
-          <h2 className=" text-3xl font-extrabold text-slate-900 mb-6 tracking-tight">
+        <div className="max-w-7xl mx-auto px-2 mb-8">
+          <h2 className=" text-[2.5rem] font-extrabold text-slate-900 mb-6 tracking-tight">
             IPEC Campus
           </h2>
 
@@ -114,7 +114,7 @@ export default function CampusAndAccreditations() {
               {/* Stroked Outlined Large Number */}
               <div className="my-auto">
                 <span className="text-6xl font-extrabold tracking-tight text-stroke font-mono">
-                  07.82
+                  12.82
                 </span>
               </div>
 
@@ -133,7 +133,7 @@ export default function CampusAndAccreditations() {
               {marqueeItems.map((item, index) => (
                 <div
                   key={`${item.id}-${index}`}
-                  className="w-24 h-16 sm:w-28 sm:h-18 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-center p-2 transition-shadow hover:shadow-md"
+                  className="w-24 h-16 sm:w-28 sm:h-18 shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-center p-2 transition-shadow hover:shadow-md"
                 >
                   <div className="text-center">
                     <span className="text-xs sm:text-sm font-extrabold text-[#1b4d8e] block">
@@ -149,7 +149,7 @@ export default function CampusAndAccreditations() {
           </div>
 
           {/* Right Arrow Navigation Icon */}
-          <div className="ml-3 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white cursor-pointer hover:bg-slate-800 transition-colors">
+          <div className="ml-3 shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white cursor-pointer hover:bg-slate-800 transition-colors">
             <ArrowRight className="w-4 h-4" />
           </div>
         </div>

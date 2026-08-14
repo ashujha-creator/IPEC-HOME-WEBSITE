@@ -59,7 +59,7 @@ export default function PlacementHighlights() {
   const marqueeRecruiters = [...recruiters, ...recruiters, ...recruiters];
 
   return (
-    <section className="w-full bg-[#f6f9fc] py-12 px-4 sm:px-6 lg:px-8 select-none">
+    <section className="w-full bg-[#fafafa] py-12 px-4 sm:px-6 lg:px-8 select-none">
       {/* Self-contained Keyframe style injection */}
       <style jsx global>{`
         @keyframes recruiterMarquee {
@@ -78,16 +78,16 @@ export default function PlacementHighlights() {
       <div className="max-w-7xl mx-auto space-y-10">
         {/* ================= HEADER SECTION ================= */}
         <div className="max-w-7xl mx-auto px-4 mb-8">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-[2.6rem] font-extrabold text-slate-900 tracking-tight">
             Placement
           </h2>
-          <h3 className="text-xl font-medium text-slate-700 mt-1">
+          <h3 className="text-[1.8rem] font-medium text-slate-700 mt-1">
             Highlights
           </h3>
-          <p className="text-xs sm:text-sm text-slate-500 mt-3 max-w-5xl leading-relaxed">
+          <p className="text-[1.25rem] sm:text-sm text-slate-500 mt-2 max-w-5xl leading-relaxed">
             With our excellent placement record, you can land your dream role.
             Top employers recruit from IPEC, offering top salary packages and
-            establishing a lucrative career ahead
+            establishing a lucrative career ahead.
           </p>
         </div>
 
@@ -98,14 +98,14 @@ export default function PlacementHighlights() {
               key={card.id}
               className={`${card.bgColor} rounded-2xl p-6 h-52 flex flex-col justify-between border border-black/5 shadow-sm transition-transform duration-300 hover:scale-[1.02]`}
             >
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              <div className="text-[ 1.9rem] sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                 {card.value}
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-900 leading-snug">
+                <p className="text-[1.35rem] font-bold text-slate-700 leading-snug">
                   {card.title}
                 </p>
-                <p className="text-xs font-semibold text-slate-700">
+                <p className="text-[0.85rem] font-semibold text-slate-700">
                   {card.subtitle}
                 </p>
               </div>
@@ -117,11 +117,11 @@ export default function PlacementHighlights() {
         <div className="pt-4">
           <div className="flex flex-col lg:flex-row lg:items-center gap-6">
             {/* Left Header Label */}
-            <div className="flex-shrink-0 w-48">
-              <h4 className="text-2xl font-extrabold text-slate-900 leading-tight">
+            <div className="shrink-0 w-full lg:w-64 h-32 p-6 flex flex-col justify-center gap-1 bg-white rounded-2xl border border-black/5 shadow-sm">
+              <h4 className="text-[1.8rem] font-extrabold text-slate-900 leading-tight">
                 Key Recruiters
               </h4>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-[ 1.1rem] text-slate-500 font-medium">
                 Placement Companies
               </p>
             </div>
@@ -129,12 +129,12 @@ export default function PlacementHighlights() {
             {/* Scrolling Ticker & Arrow Container */}
             <div className="relative flex-1 flex items-center overflow-hidden">
               {/* Marquee Wrapper */}
-              <div className="group relative w-full overflow-hidden py-2">
-                <div className="flex w-max space-x-4 animate-recruiter-scroll group-hover:[animation-play-state:paused]">
+              <div className="group relative w-full overflow-hidden py-6">
+                <div className="flex w-max space-x-4 animate-recruiter-scroll group-hover:paused">
                   {marqueeRecruiters.map((item, index) => (
                     <div
                       key={`${item.name}-${index}`}
-                      className="w-36 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-300 shadow-sm flex items-center justify-center p-3 transition-shadow hover:shadow-md"
+                      className="w-50 h-20 flex-shrink-0 bg-white rounded-xl border border-slate-300 shadow-sm flex items-center justify-center p-3 transition-shadow hover:shadow-md"
                     >
                       <span className={`text-sm ${item.fontStyle}`}>
                         {item.name}

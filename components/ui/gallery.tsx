@@ -101,50 +101,43 @@ function GalleryColumn({
   direction: "up" | "down";
   duration: number;
 }) {
-  // Fix 1: If a column has too few images (e.g. 2 images = ~460px height),
-  // it won't cover the 510px container. Double the source array to ensure overflow.
-  const safeImages = images.length < 3 ? [...images, ...images] : images;
+  // Make sure every column has enough content to animate smoothly.
+  const safeImages =
+    images.length < 3 ? [...images, ...images, ...images] : images;
+
+  // Two identical sets are required for a seamless infinite loop.
+  const items = [...safeImages, ...safeImages];
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-xl">
-      {/* Fix 3: Use CSS variables for flawless React->CSS bindings */}
+    <div className="relative h-full min-h-0 w-full overflow-hidden rounded-xl">
       <div
-        className="life-gallery-track flex flex-col"
+        className={`life-gallery-track ${
+          direction === "up"
+            ? "life-gallery-track-up"
+            : "life-gallery-track-down"
+        }`}
         style={
           {
             "--duration": `${duration}s`,
-            "--direction": direction === "down" ? "reverse" : "normal",
           } as React.CSSProperties
         }
       >
-        {/* Fix 2: Grouping into two distinct blocks with pb-3 aligns the 50% math perfectly */}
-        {/* Block 1 */}
-        <ul className="flex flex-col gap-3 pb-3">
-          {safeImages.map((img, i) => (
-            <li key={`a-${i}`} className="shrink-0 overflow-hidden rounded-xl">
+        {items.map((img, i) => (
+          <div
+            key={`${img.src}-${i}`}
+            className="w-full shrink-0 overflow-hidden rounded-xl pb-3"
+          >
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl">
               <img
                 src={img.src}
                 alt={img.alt}
-                loading="lazy"
-                className="h-[230px] w-full object-cover sm:h-[210px] lg:h-[231px]"
+                loading={i < safeImages.length ? "eager" : "lazy"}
+                draggable={false}
+                className="block h-full w-full object-cover object-center"
               />
-            </li>
-          ))}
-        </ul>
-
-        {/* Block 2 (Seamless loop duplicate) */}
-        <ul className="flex flex-col gap-3 pb-3" aria-hidden="true">
-          {safeImages.map((img, i) => (
-            <li key={`b-${i}`} className="shrink-0 overflow-hidden rounded-xl">
-              <img
-                src={img.src}
-                alt={img.alt}
-                loading="lazy"
-                className="h-[230px] w-full object-cover sm:h-[210px] lg:h-[231px]"
-              />
-            </li>
-          ))}
-        </ul>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -184,24 +177,21 @@ export default function LifeGallery({
       <div className="relative mb-6 max-w-4xl lg:mb-8">
         <h2
           id="life-gallery-heading"
-          className="text-2xl font-bold text-slate-900 sm:text-[28px]"
+          className="text-[1.8rem] font-bold text-slate-900 sm:text-[2.1rem] lg:text-[2.4rem]"
         >
           {heading}
         </h2>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-slate-500 sm:text-sm">
+        <p className="mt-2 text-[1.25rem] leading-relaxed text-slate-500 sm:text-[1rem] lg:text-[1.1rem]">
           {description}
         </p>
       </div>
 
       <div
         className="
-          relative grid h-[480px] grid-cols-2 gap-3
-          sm:h-[500px] sm:grid-cols-3
-          lg:h-[510px]
-        "
-        style={{
-          gridTemplateColumns: `repeat(${Math.min(columns, 5)}, minmax(0, 1fr))`,
-        }}
+    relative grid h-[480px] grid-cols-2 gap-3
+    sm:h-[500px] sm:grid-cols-3
+    lg:h-[510px] lg:grid-cols-5
+  "
       >
         <div
           aria-hidden="true"
@@ -223,27 +213,53 @@ export default function LifeGallery({
       </div>
 
       <style>{`
-        .life-gallery-track {
-          animation: life-gallery-scroll var(--duration, 30s) linear infinite var(--direction, normal);
-          will-change: transform;
-        }
-        @keyframes life-gallery-scroll {
-          from { transform: translateY(0); }
-          to { transform: translateY(-50%); }
-        }
+  .life-gallery-track {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+  }
 
-        /* Fallbacks: Use .group hover for browsers that don't support :has() */
-        .group:hover .life-gallery-track,
-        section:has(.life-gallery-track):hover .life-gallery-track {
-          animation-play-state: paused;
-        }
+  .life-gallery-track-up {
+    animation: life-gallery-scroll-up var(--duration, 30s) linear infinite;
+  }
 
-        @media (prefers-reduced-motion: reduce) {
-          .life-gallery-track {
-            animation: none !important;
-          }
-        }
-      `}</style>
+  .life-gallery-track-down {
+    animation: life-gallery-scroll-down var(--duration, 30s) linear infinite;
+  }
+
+  @keyframes life-gallery-scroll-up {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+
+  @keyframes life-gallery-scroll-down {
+    from {
+      transform: translate3d(0, -50%, 0);
+    }
+
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .group:hover .life-gallery-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .life-gallery-track {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
+`}</style>
     </section>
   );
 }

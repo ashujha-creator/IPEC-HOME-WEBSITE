@@ -87,7 +87,7 @@ export default function ImageCarousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative w-full aspect-[16/7] min-h-[320px] sm:min-h-[400px] overflow-hidden rounded-2xl shadow-xl bg-slate-900 border border-slate-200">
+      <div className="relative w-full aspect-16/7 min-h-320px sm:min-h-400px overflow-hidden rounded-2xl shadow-xl bg-slate-900 border border-slate-200">
         {/* Slides */}
         {SLIDES.map((slide, index) => (
           <div
@@ -106,12 +106,12 @@ export default function ImageCarousel() {
               priority={index === 0}
               className="object-cover transform scale-100 transition-transform duration-1000"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent sm:w-3/4" />
+            <div className="absolute inset-0 bg-linear-to-r from-white/95 via-white/80 to-transparent sm:w-3/4" />
 
             {/* Content Overlay */}
             <div className="absolute inset-0 flex flex-col justify-center px-8 sm:px-12 md:px-16 max-w-2xl z-20">
               {slide.badge && (
-                <span className="inline-block w-fit px-3 py-1 mb-3 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-indigo-700 rounded-full shadow-md">
+                <span className="inline-block w-fit px-3 py-1 mb-3 text-xs sm:text-sm font-bold text-white bg-linear-to-r from-blue-700 to-indigo-700 rounded-full shadow-md">
                   {slide.badge}
                 </span>
               )}

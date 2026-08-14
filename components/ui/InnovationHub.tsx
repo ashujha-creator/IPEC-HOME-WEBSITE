@@ -220,7 +220,7 @@ export default function InnovationHub({
   return (
     <section
       aria-labelledby="innovation-hub-heading"
-      className={`w-full bg-[#f6f9fc] py-12 px-4 sm:px-6 lg:px-8 select-none rounded-2xl ${className}`}
+      className={`w-full bg-[#f6f9fc] py-10 px-4 sm:px-6 lg:px-4 select-none rounded-2xl ${className}`}
     >
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px]">
         {/* Left: heading, tabs, project cards */}
@@ -228,11 +228,11 @@ export default function InnovationHub({
           <div className="bg-white px-5 pt-6 sm:px-8 sm:pt-8">
             <h2
               id="innovation-hub-heading"
-              className="text-2xl font-extrabold text-slate-900 sm:text-[28px]"
+              className="text-[2.5rem] p-4 font-extrabold text-slate-900 sm:text-[2.9rem]"
             >
               {heading}
             </h2>
-            <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-slate-600 sm:text-[13.5px]">
+            <p className="mt-2 max-w-2xl p-2  text-[1.25rem] leading-relaxed text-slate-600 sm:text-[1rem]">
               {description}
             </p>
 
@@ -299,7 +299,7 @@ export default function InnovationHub({
         >
           <h2
             id="startups-heading"
-            className="mb-4 text-xl font-extrabold text-white sm:text-2xl"
+            className="mb-4 text-xl pb-6 font-extrabold text-white sm:text-2xl"
           >
             {startupsHeading}
           </h2>
@@ -307,7 +307,7 @@ export default function InnovationHub({
           <ul
             className="
               innovation-hub-scroll min-h-0 flex-1 list-none overflow-y-auto pr-3
-              lg:max-h-[420px]
+              lg:max-h-[calc(100vh-8rem)] lg:pr-0
             "
           >
             {startups.map((startup) => (

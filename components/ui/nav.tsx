@@ -79,7 +79,7 @@ function DesktopNavItem({
         aria-haspopup={hasChildren ? "true" : undefined}
         aria-expanded={hasChildren ? open : undefined}
         className={`
-          flex whitespace-nowrap px-3.5 py-2.5 text-[13px] font-medium
+          flex whitespace-nowrap px-3.5 py-3 text-[25px] font-medium
           text-white/90 transition-colors duration-150 xl:text-[13.5px]
           hover:bg-white/[0.08] hover:text-white
           focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
@@ -109,7 +109,7 @@ function DesktopNavItem({
               <a
                 href={child.href}
                 className="
-                  block px-4 py-2.5 text-[13px] text-white/85 transition-colors
+                  block px-4 py-2.5 text-[25px] text-white/85 transition-colors
                   hover:bg-white/[0.08] hover:text-white
                   focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
                   focus-visible:outline-orange-400
@@ -232,7 +232,7 @@ export default function Navbar({
       aria-label="Primary"
       className={`relative z-40 bg-[#0B1550] ${className}`}
     >
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-350 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Desktop menu */}
         <ul className="hidden flex-1 items-center justify-center lg:flex">
           {items.map((item) => (

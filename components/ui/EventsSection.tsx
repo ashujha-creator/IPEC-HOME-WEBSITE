@@ -236,12 +236,12 @@ export default function WhatsHappening({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:gap-8">
         {/* Left: heading + carousel card */}
         <div>
-          <p className="text-2xl font-extrabold leading-tight text-slate-900 sm:text-[28px]">
+          <p className="text-[1.8rem] font-extrabold leading-tight text-slate-900 sm:text-[2.1rem] lg:text-[2.4rem]">
             {eyebrow}
           </p>
           <h2
             id="whats-happening-heading"
-            className="text-lg font-medium text-slate-700 sm:text-xl"
+            className="text-[1.2rem] font-medium text-slate-700 sm:text-[1.3rem] lg:text-[1.4rem]"
           >
             {heading}
           </h2>

@@ -70,7 +70,7 @@ export default function OurStrength() {
   ];
 
   return (
-    <section className=" py-12 w-full px-4 sm:px-6 lg:px-8 bg-[#eaf0f6] overflow-hidden select-none">
+    <section className=" py-12 w-full px-4 sm:px-6 lg:px-8 bg-[#f7f7f7] overflow-hidden select-none">
       {/* Inject Keyframe Animation directly so you don't need tailwind.config */}
       <style jsx global>{`
         @keyframes marquee {
@@ -86,24 +86,14 @@ export default function OurStrength() {
         }
       `}</style>
 
-      <div className="max-w-7xl mx-auto px-4 mb-8">
-        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-6">
+      <div className="max-w-7xl mx-auto px-2 mb-8">
+        <h2 className="text-[2.6rem] font-extrabold tracking-tight text-slate-900 mb-6">
           Our Strength
         </h2>
       </div>
 
       {/* Main Track Container */}
-      <div className="relative flex max-w-7xl mx-auto px-6   items-center">
-        {/* Left Control Arrow */}
-        <div className="absolute left-6 z-20 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-700 text-slate-800 cursor-pointer">
-          <ArrowLeft className="w-4 h-4" />
-        </div>
-
-        {/* Right Control Arrow */}
-        <div className="absolute right-6 z-20 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-700 text-slate-800 cursor-pointer">
-          <ArrowRight className="w-4 h-4" />
-        </div>
-
+      <div className="relative flex max-w-7xl mx-auto  items-center">
         {/* Continuous Center Horizontal Blue Line */}
         <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-sky-400 -translate-y-1/2 z-0" />
 

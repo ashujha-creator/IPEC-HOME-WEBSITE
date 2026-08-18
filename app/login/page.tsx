@@ -67,9 +67,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-900">
       <div className="w-full max-w-md space-y-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Welcome back
-          </h1>
+          <div className="flex items-center justify-center">
+            <img
+              src="/logo.png"
+              alt="Indraprashta Engineering College"
+              className="size-[300px] object-contain"
+            />
+          </div>
           <p className="text-sm text-slate-600 dark:text-slate-400">
             Enter your credentials to sign in to your account
           </p>

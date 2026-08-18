@@ -72,21 +72,33 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-900">
       <div className="w-full max-w-md space-y-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        {/* Header */}
         <div className="space-y-2 text-center">
+          {/* Logo */}
+          <div className="flex items-center justify-center">
+            <img
+              src="/logo.png"
+              alt="Indraprashta Engineering College"
+              className="size-[300px] object-contain"
+            />
+          </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Create an account
           </h1>
+
           <p className="text-sm text-slate-600 dark:text-slate-400">
             Enter your details below to get started
           </p>
         </div>
 
+        {/* Server Error */}
         {serverError && (
           <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/50 dark:text-red-400">
             {serverError}
           </div>
         )}
 
+        {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
@@ -100,15 +112,17 @@ export default function SignupPage() {
             >
               Full Name
             </label>
+
             <input
               id="name"
               type="text"
               autoComplete="name"
               disabled={isSubmitting}
               {...register("name")}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               placeholder="Jane Doe"
             />
+
             {errors.name && (
               <p className="text-xs text-red-500">{errors.name.message}</p>
             )}
@@ -122,15 +136,17 @@ export default function SignupPage() {
             >
               Email Address
             </label>
+
             <input
               id="email"
               type="email"
               autoComplete="email"
               disabled={isSubmitting}
               {...register("email")}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               placeholder="jane@example.com"
             />
+
             {errors.email && (
               <p className="text-xs text-red-500">{errors.email.message}</p>
             )}
@@ -144,6 +160,7 @@ export default function SignupPage() {
             >
               Password
             </label>
+
             <div className="relative">
               <input
                 id="password"
@@ -151,22 +168,25 @@ export default function SignupPage() {
                 autoComplete="new-password"
                 disabled={isSubmitting}
                 {...register("password")}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="••••••••"
               />
+
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                onClick={() => setShowPassword((prev) => !prev)}
+                disabled={isSubmitting}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-200"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="size-4" />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="size-4" />
                 )}
               </button>
             </div>
+
             {errors.password && (
               <p className="text-xs text-red-500">{errors.password.message}</p>
             )}
@@ -180,7 +200,7 @@ export default function SignupPage() {
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
                 Creating account...
               </>
             ) : (
@@ -189,6 +209,7 @@ export default function SignupPage() {
           </button>
         </form>
 
+        {/* Login Link */}
         <div className="text-center text-xs text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
           <Link

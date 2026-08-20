@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 const Header = () => {
   return (
     <header className="w-full border-b bg-white">
@@ -54,7 +55,9 @@ const Header = () => {
                 className="w-full lg:w-auto bg-[#ed4200] hover:bg-orange-600 text-white rounded-xl px-6 py-6 flex items-center justify-center gap-2"
               >
                 <NotebookPen className="h-5 w-5" />
-                <span>Admission Open</span>
+                <Link href={"/addmission"}>
+                  <span>Admission Open</span>
+                </Link>
               </Button>
 
               {/* Virtual Tour Button */}

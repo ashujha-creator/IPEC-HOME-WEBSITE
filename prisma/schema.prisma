@@ -73,3 +73,33 @@ model Verification {
   @@unique([identifier, value])
   @@map("verification")
 }
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+}
+
+model Applicant {
+  id              String            @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Personal Information
+  firstName       String
+  lastName        String
+  email           String            @unique
+  phone           String
+  dateOfBirth     DateTime
+  gender          Gender
+
+  // Program Details
+  programApplied  String
+  intendedTerm    String
+
+  status          ApplicationStatus @default(SUBMITTED)
+}

@@ -24,7 +24,9 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-
+  @@index([id])
+  @@index([name])
+  @@index([email])
   @@map("user")
 }
 
@@ -44,6 +46,8 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([providerId, accountId])
+  @@index([id])
+  @@index([userId,accountId])
   @@map("account")
 }
 
@@ -58,7 +62,7 @@ model Session {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+    @@index([id,userId])
   @@map("session")
 }
 
@@ -71,6 +75,7 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
+  @@index([id,identifier])
   @@map("verification")
 }
 
@@ -102,4 +107,8 @@ model Applicant {
   intendedTerm    String
 
   status          ApplicationStatus @default(SUBMITTED)
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@index([firstName, lastName])
 }

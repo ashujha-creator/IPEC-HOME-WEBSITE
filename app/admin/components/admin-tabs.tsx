@@ -1,11 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Home, Info, FileText, GraduationCap, Folder } from "lucide-react";
+import {
+  Home,
+  Info,
+  FileText,
+  GraduationCap,
+  Folder,
+  UserPlus,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Types
-export type TabId = "home" | "about" | "content" | "faculty" | "resources";
+export type TabId =
+  "home" | "about" | "content" | "faculty" | "resources" | "addmissions";
 
 export interface TabItem {
   id: TabId;
@@ -20,6 +28,7 @@ export const ADMIN_TABS: TabItem[] = [
   { id: "content", label: "Content", icon: FileText },
   { id: "faculty", label: "Faculty", icon: GraduationCap },
   { id: "resources", label: "Resources", icon: Folder },
+  { id: "addmissions", label: "Addmissions", icon: UserPlus },
 ];
 
 interface AdminTabsProps {

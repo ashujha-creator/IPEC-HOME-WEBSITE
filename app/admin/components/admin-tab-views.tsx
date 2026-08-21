@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import UpdateHome from "./home-page";
+import AddmissionPage from "./addmission-page";
 
 interface TabViewsProps {
   activeTab: TabId;
@@ -87,6 +88,8 @@ export function AdminTabViews({ activeTab }: TabViewsProps) {
           </CardContent>
         </Card>
       );
+    case "addmissions":
+      return <AddmissionPage />;
 
     default:
       return null;

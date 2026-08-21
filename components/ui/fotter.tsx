@@ -277,7 +277,7 @@ export default function Footer({
                   aria-hidden="true"
                 />
                 <a
-                  href={contact.emailHref ?? `mailto:${contact.email}`}
+                  href={contact.emailHref}
                   className="
                     break-all text-[13.5px] text-white/70 transition-colors
                     hover:text-white hover:underline

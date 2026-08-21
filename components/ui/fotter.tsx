@@ -82,7 +82,7 @@ const defaultContact: ContactInfo = {
     "+91-9910449090,",
     "7428787744 (For admission-related queries)",
   ],
-  email: "admission@ipec.org.in",
+  email: "addmission@ipec.org.in",
 };
 
 const defaultLinkColumns: FooterLinkColumn[] = [

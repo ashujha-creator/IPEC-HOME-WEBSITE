@@ -1,15 +1,7 @@
+import "server-only"; // ✅ Guarantees this cannot be bundled into client components
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
-import { PrismaClient } from "@/app/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "@/lib/prisma";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

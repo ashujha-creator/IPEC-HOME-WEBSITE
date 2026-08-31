@@ -61,14 +61,15 @@ const Header = () => {
               </Button>
 
               {/* Virtual Tour Button */}
-              <Button
-                size="lg"
-                className="w-full lg:w-auto bg-[#ed4200] hover:bg-orange-600 text-white rounded-xl px-6 py-6 flex items-center justify-center gap-2"
-              >
-                <SquareArrowOutUpRight className="h-5 w-5" />
-                <span>Virtual Campus Tour</span>
-              </Button>
-
+              <Link href={"/tour"}>
+                <Button
+                  size="lg"
+                  className="w-full lg:w-auto bg-[#ed4200] hover:bg-orange-600 text-white rounded-xl px-6 py-6 flex items-center justify-center gap-2"
+                >
+                  <SquareArrowOutUpRight className="h-5 w-5" />
+                  <span>Virtual Campus Tour</span>
+                </Button>
+              </Link>
               {/* Search */}
               <div className="flex w-full lg:w-72 items-center rounded-xl border border-gray-300 px-3 py-2">
                 <input

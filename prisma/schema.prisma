@@ -24,6 +24,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  pages        Page[]
   @@index([id])
   @@index([name])
   @@index([email])
@@ -111,4 +112,32 @@ model Applicant {
   @@index([createdAt])
   @@index([email])
   @@index([firstName, lastName])
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Page {
+  id               String     @id @default(cuid())
+  title            String
+  slug             String     @unique
+  shortDescription String?    @db.Text
+  content          Json       // Tiptap JSON document tree
+  status           PageStatus @default(DRAFT)
+  image            String[]    @db.Text
+  authorId         String
+  author           User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([slug])
+   @@index([createdAt])
+   @@index([title])
+  @@index([authorId])
+  @@index([status])
+  @@map("page")
 }

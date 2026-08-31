@@ -11,6 +11,7 @@ import Notice from "@/components/ui/Notice";
 import EventsSection from "@/components/ui/EventsSection";
 import Footer from "../../components/ui/fotter";
 import LifeGallery from "@/components/ui/gallery";
+import AboutSection from "@/components/ui/about";
 export default function Home() {
   return (
     <>
@@ -19,6 +20,7 @@ export default function Home() {
         <NavBar />
         <Announcement />
         <Carousel />
+        <AboutSection />
         <OurStrength />
         <CampusAndAccreditations />
         <PlacementHighlights />

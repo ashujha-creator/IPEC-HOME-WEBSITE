@@ -13,7 +13,13 @@ import { cn } from "@/lib/utils";
 
 // Types
 export type TabId =
-  "home" | "about" | "content" | "faculty" | "resources" | "addmissions";
+  | "home"
+  | "about"
+  | "pages"
+  | "content"
+  | "faculty"
+  | "resources"
+  | "addmissions";
 
 export interface TabItem {
   id: TabId;
@@ -25,6 +31,7 @@ export interface TabItem {
 export const ADMIN_TABS: TabItem[] = [
   { id: "home", label: "Home", icon: Home },
   { id: "about", label: "About", icon: Info },
+  { id: "pages", label: "Pages", icon: FileText },
   { id: "content", label: "Content", icon: FileText },
   { id: "faculty", label: "Faculty", icon: GraduationCap },
   { id: "resources", label: "Resources", icon: Folder },

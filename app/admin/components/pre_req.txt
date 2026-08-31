@@ -1,0 +1,1342 @@
+┌──────────────────────────────────────────────────────────────┐
+│ Create Page                                                   │
+│                                                              │
+│ Title                                                        │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ About Our Computer Science Department                    │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ URL / Slug                                                   │
+│ /departments/computer-science                                │
+│                                                              │
+│ Short Description                                            │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ Learn about our department...                            │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ B  I  U  H1 H2  •  1.  ≡  🔗  🖼  📄  ▶  ...           │ │
+│ │                                                          │ │
+│ │ Start writing...                                         │ │
+│ │                                                          │ │
+│ │                                                          │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ [Save Draft]       [Preview]       [Publish]                 │
+└──────────────────────────────────────────────────────────────┘
+
+File storage	Supabase Storage
+Rich text editor	Tiptap
+
+Validation	Zod
+Forms	React Hook Form
+Editor format	Tiptap JSON
+Image handling	Supabase Storage
+YouTube	Store URL/embed information
+PDFs	Supabase Storage
+Page URLs	Slugs
+Draft/publish	Page status
+History	Revision system
+
+The most important architectural decision: DON'T store HTML
+Instead, use Tiptap JSON
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 1
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Computer Science Department"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Welcome to our department."
+        }
+      ]
+    }
+  ]
+}
+
+Then your database contains structured content.
+
+That gives you much more flexibility later.
+
+You can add:
+
+headings
+paragraphs
+bold
+italic
+underline
+links
+ordered lists
+bullet lists
+blockquotes
+images
+videos
+PDFs
+tables
+code blocks
+text alignment
+colors
+highlights
+embeds
+custom components
+
+User
+ │
+ ├── created Pages
+ ├── updated Pages
+ └── created Revisions
+
+Page
+ │
+ ├── title
+ ├── slug
+ ├── description
+ ├── content
+ ├── status
+ ├── publishedAt
+ ├── createdBy
+ ├── updatedBy
+ └── revisions
+
+Revision
+ │
+ ├── page
+ ├── content
+ ├── title
+ ├── createdBy
+ └── createdAt
+
+Media
+ │
+ ├── filename
+ ├── storagePath
+ ├── url
+ ├── type
+ ├── size
+ └── uploadedBy
+
+Category
+ │
+ └── Pages
+
+PageCategory
+
+model Page {
+  id          String   @id @default(cuid())
+
+  title       String
+  slug        String   @unique
+  description String?
+
+  content     Json
+
+  status      PageStatus @default(DRAFT)
+
+  publishedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdById String
+  updatedById String?
+
+  revisions   PageRevision[]
+
+  createdBy   User @relation("PageCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User? @relation("PageUpdatedBy", fields: [updatedById], references: [id])
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+Prisma schema depends on my existing User model, so integrate it with what you already have rather than creating a second user system.
+Add revisions from the beginning
+This is one feature people often forget.
+
+Imagine a faculty member edits:
+
+"Admission requirements..."
+
+and accidentally deletes half the page.
+
+They click Save.
+
+Now what?
+
+Without revisions:
+
+Content gone.
+
+With revisions:
+Revision 5
+Revision 4
+Revision 3
+Revision 2
+Revision 1
+
+model PageRevision {
+  id        String   @id @default(cuid())
+
+  pageId    String
+
+  title     String
+  content   Json
+
+  createdAt DateTime @default(now())
+
+  createdById String
+
+  page      Page @relation(fields: [pageId], references: [id])
+}
+
+Version History
+Later you can make the UI:
+Today
+────────────────────────
+● Version 8     You
+  10:32 AM
+
+● Version 7     Dr. Sharma
+  09:48 AM
+
+Yesterday
+────────────────────────
+● Version 6     Admin
+  04:21 PM
+
+  [Preview Version] [Restore Version]
+Page statuses
+Don't just have:
+
+exists / doesn't exist
+
+Use:
+
+DRAFT
+PUBLISHED
+ARCHIVED
+
+Potentially later:
+
+DRAFT
+IN_REVIEW
+SCHEDULED
+PUBLISHED
+ARCHIVED
+
+This allows workflows such as:
+Faculty
+   │
+   │ create
+   ▼
+DRAFT
+   │
+   │ submit
+   ▼
+PUBLISHED
+For your first version, though, I'd keep it simple:
+
+DRAFT → PUBLISHED
+ Preview is extremely important
+You specifically mentioned preview.
+
+Don't build preview as:
+
+Save page → open public page
+For example:
+
+/admin/pages/123/edit
+
+and:
+
+/admin/pages/123/preview
+
+The preview should render the exact same component that the public website uses.
+
+Something like:
+
+PageEditor
+     │
+     └── content JSON
+
+PublicPageRenderer
+     │
+     └── content JSON
+
+So:
+
+EDITOR
+   ↓
+Tiptap JSON
+   ↓
+Preview Renderer
+   ↓
+Actual Public Page
+
+This is where Tiptap comes in.
+
+I'd start with:
+
+Basic formatting
+Bold
+Italic
+Underline
+Strike
+Code
+Text color
+Highlight
+Headings
+Paragraph
+Heading 1
+Heading 2
+Heading 3
+Heading 4
+
+Lists
+Bullet list
+Ordered list
+Task/checklist list
+Alignment
+Left
+Center
+Right
+Justify
+
+Links
+User selects text:
+
+Visit our website
+
+Clicks:
+
+🔗
+
+Gets:
+
+URL: https://example.com
+
+Open in new tab: ✓
+
+[Insert]
+
+Media
+Toolbar:
+
+Image
+Video
+PDF
+Link
+
+Other useful things
+Blockquote
+Horizontal divider
+Table
+Undo
+Redo
+Clear formatting
+Search/replace eventually
+Keyboard shortcuts
+Drag/drop images
+Paste images
+10. Don't put every feature in the toolbar
+This is important for the Notion-like experience you're asking for.
+
+A giant toolbar like this:
+
+B I U S H1 H2 H3 H4 H5 H6
+A A A A A A
+☰ ☷ ≡ ...
+
+quickly becomes ugly.
+
+Instead use a compact toolbar:
+
++   Text   B   I   🔗   ...
+
+and a floating menu.
+
+For example, when they type:
+
+/
+
+show:
+
+Basic blocks
+
+/heading
+/paragraph
+/bullet list
+/numbered list
+/quote
+/divider
+
+Media
+
+/image
+/video
+/pdf
+/embed
+
+Advanced
+
+/table
+/code
+/callout
+
+That gets much closer to the Notion experience.
+
+Don't make users upload an image every time they create a page.
+
+Create:
+
+Admin
+ └── Media Library
+
+Example:
+
+Media Library
+
+[ Upload ]
+
+┌────────┐ ┌────────┐ ┌────────┐
+│ image  │ │ image  │ │ image  │
+│        │ │        │ │        │
+└────────┘ └────────┘ └────────┘
+
+college-building.jpg
+annual-function.jpg
+principal.jpg
+
+With:
+
+Search
+Filter
+Upload
+Delete
+Rename
+Copy URL
+Page
+ └── image = giant binary
+
+Instead:
+
+Supabase Storage
+
+college/
+   images/
+      college-building.jpg
+      principal.jpg
+
+documents/
+   admission/
+      admission-2026.pdf
+
+Database:
+
+Media
+────────────────────────────
+id
+filename
+storagePath
+mimeType
+size
+altText
+uploadedBy
+createdAt
+
+Then your Tiptap document references the media.
+
+For example:
+
+{
+  "type": "image",
+  "attrs": {
+    "src": "https://...",
+    "alt": "College building",
+    "title": "Main college building"
+  }
+  PDFs need special treatment
+Don't simply let faculty paste random PDF URLs everywhere.
+
+Create a PDF insert UI:
+
+Insert PDF
+
+[ Choose from Media Library ]
+
+or
+
+[ Upload PDF ]
+
+Display:
+
+○ Download link
+○ Embedded viewer
+
+Then the page can display:
+
+📄 Admission Brochure 2026
+
+[ View PDF ] [ Download ]
+
+14. YouTube videos
+For YouTube, don't download the video.
+
+Store the YouTube URL:
+
+https://www.youtube.com/watch?v=abc123
+
+Your editor converts it to an embed.
+
+Conceptually:
+
+{
+  "type": "youtube",
+  "attrs": {
+    "videoId": "abc123"
+  }
+}
+
+Then your renderer creates the iframe.
+
+You can also support:
+
+YouTube
+YouTube Shorts
+Vimeo
+
+ Add SEO fields
+This is very important for a college website.
+
+Don't only have:
+
+Title
+Description
+Content
+
+Add:
+
+SEO
+
+SEO Title
+SEO Description
+OG Image
+
+For example:
+
+Page Title:
+Computer Science Department | ABC College
+
+SEO Title:
+Computer Science Department - ABC College
+
+SEO Description:
+Learn about the Computer Science Department, faculty,
+courses, facilities and academic programs at ABC College.
+
+OG Image:
+[ college-building.jpg ]
+
+This will help your public pages later.
+
+16. Add a slug
+Every page should have:
+
+Title:
+About Computer Science Department
+
+Slug:
+about-computer-science-department
+
+Public URL:
+
+/about-computer-science-department
+
+Or preferably, depending on your website:
+
+/departments/computer-science
+
+I'd actually recommend supporting a page hierarchy.
+
+For example:
+
+Departments
+    └── Computer Science
+         ├── Faculty
+         ├── Courses
+         ├── Facilities
+         └── Research
+
+That means your URL could become:
+
+/departments/computer-science
+/departments/computer-science/faculty
+/departments/computer-science/courses
+
+Log in
+
+Sign up for free
+You said:
+
+i creating a project in next js, the project is for my college. the college website where where management, faculty have a acesses to a feature where they can add/update/delete pages to website without any coding. in these pages they can add title, description, content, they can link websites, pdfs, video from youtube, images etc. the text editor where they wirte conent needs to me modern like notion or word etc where features like they have abiltiy to bold text, add heading, sub heading, numbers, lists , align text,  integrate images  and many more etc. and they need to also have have abilty preview and publish the page.  add other important features that I'm missing help with with that, how should I built it what should use, what first thing should create. guide through with everthing. also know that I'm using typescript, supabase prisma, I already have the admin page and consumer(student) page, auth ready and funtional.
+
+ChatGPT said:
+Yes — and you are actually at a good point to build this. Since Next.js + TypeScript + Supabase + Prisma + authentication + admin/student areas are already working, I would not rebuild your project. I would add a proper CMS layer to what you already have.
+
+The important thing is to think of this as a mini WordPress/Notion-style CMS, not simply a "page CRUD".
+
+1. What you're really building
+Your management/faculty users should be able to do something like:
+
+Admin Dashboard
+    │
+    ├── Pages
+    │     ├── All Pages
+    │     ├── Create Page
+    │     ├── Drafts
+    │     ├── Published
+    │     └── Trash
+    │
+    ├── Media Library
+    │     ├── Images
+    │     ├── PDFs
+    │     └── Documents
+    │
+    ├── Categories / Departments
+    │
+    ├── Navigation
+    │
+    └── Activity / Revisions
+
+And when creating a page:
+
+┌──────────────────────────────────────────────────────────────┐
+│ Create Page                                                   │
+│                                                              │
+│ Title                                                        │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ About Our Computer Science Department                    │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ URL / Slug                                                   │
+│ /departments/computer-science                                │
+│                                                              │
+│ Short Description                                            │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ Learn about our department...                            │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │ B  I  U  H1 H2  •  1.  ≡  🔗  🖼  📄  ▶  ...           │ │
+│ │                                                          │ │
+│ │ Start writing...                                         │ │
+│ │                                                          │ │
+│ │                                                          │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│ [Save Draft]       [Preview]       [Publish]                 │
+└──────────────────────────────────────────────────────────────┘
+
+That's the right mental model.
+
+2. My recommended stack
+For your particular project, I would use:
+
+Requirement	Recommendation
+Framework	Next.js App Router
+Language	TypeScript
+Database	Supabase PostgreSQL
+ORM	Prisma
+Authentication	Your existing Supabase Auth
+File storage	Supabase Storage
+Rich text editor	Tiptap
+UI	Tailwind + shadcn/ui if you're already using it
+Validation	Zod
+Forms	React Hook Form
+Editor format	Tiptap JSON
+Image handling	Supabase Storage
+YouTube	Store URL/embed information
+PDFs	Supabase Storage
+Page URLs	Slugs
+Draft/publish	Page status
+History	Revision system
+Permissions	Role/permission system
+
+Next.js' App Router is a good fit for this architecture, and Prisma works directly with Supabase's PostgreSQL database.
+N
+Next.js
++1
+
+For the editor specifically, I strongly recommend Tiptap rather than trying to build your own editor. Tiptap has a React integration and is built on ProseMirror; its StarterKit gives you the common editing functionality to get started.
+T
+Tiptap
++1
+
+For files, use Supabase Storage, not your database. Supabase specifically recommends Storage for files such as images, videos and documents, with access policies available for controlling them.
+S
+Supabase
++1
+
+3. The most important architectural decision: DON'T store HTML
+This is probably the biggest decision you need to make early.
+
+You might be tempted to do:
+
+content String
+
+and store:
+
+<h1>Hello</h1>
+<p>This is my page...</p>
+<img src="..." />
+
+I would not make that your primary content representation.
+
+Instead, use Tiptap JSON.
+
+For example:
+
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 1
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Computer Science Department"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Welcome to our department."
+        }
+      ]
+    }
+  ]
+}
+
+Then your database contains structured content.
+
+That gives you much more flexibility later.
+
+You can add:
+
+headings
+paragraphs
+bold
+italic
+underline
+links
+ordered lists
+bullet lists
+blockquotes
+images
+videos
+PDFs
+tables
+code blocks
+text alignment
+colors
+highlights
+embeds
+custom components
+without turning your database into a pile of HTML.
+
+Tiptap's Next.js integration also specifically documents the need to initialize the editor client-side to avoid SSR/hydration problems.
+T
+Tiptap
+
+4. Your database architecture
+I'd start with something roughly like this.
+
+Don't copy this blindly into your project yet — first understand the relationships.
+
+User
+ │
+ ├── created Pages
+ ├── updated Pages
+ └── created Revisions
+
+Page
+ │
+ ├── title
+ ├── slug
+ ├── description
+ ├── content
+ ├── status
+ ├── publishedAt
+ ├── createdBy
+ ├── updatedBy
+ └── revisions
+
+Revision
+ │
+ ├── page
+ ├── content
+ ├── title
+ ├── createdBy
+ └── createdAt
+
+Media
+ │
+ ├── filename
+ ├── storagePath
+ ├── url
+ ├── type
+ ├── size
+ └── uploadedBy
+
+Category
+ │
+ └── Pages
+
+PageCategory
+
+You can then expand this later.
+
+5. Page model
+I'd have something conceptually like:
+
+model Page {
+  id          String   @id @default(cuid())
+
+  title       String
+  slug        String   @unique
+  description String?
+
+  content     Json
+
+  status      PageStatus @default(DRAFT)
+
+  publishedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdById String
+  updatedById String?
+
+  revisions   PageRevision[]
+
+  createdBy   User @relation("PageCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User? @relation("PageUpdatedBy", fields: [updatedById], references: [id])
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+The exact Prisma schema depends on your existing User model, so integrate it with what you already have rather than creating a second user system.
+
+6. Add revisions from the beginning
+This is one feature people often forget.
+
+Imagine a faculty member edits:
+
+"Admission requirements..."
+
+and accidentally deletes half the page.
+
+They click Save.
+
+Now what?
+
+Without revisions:
+
+Content gone.
+
+With revisions:
+
+Revision 5
+Revision 4
+Revision 3
+Revision 2
+Revision 1
+
+They can restore Revision 4.
+
+Your revision model can look conceptually like:
+
+model PageRevision {
+  id        String   @id @default(cuid())
+
+  pageId    String
+
+  title     String
+  content   Json
+
+  createdAt DateTime @default(now())
+
+  createdById String
+
+  page      Page @relation(fields: [pageId], references: [id])
+}
+
+Later you can make the UI:
+
+Version History
+
+Today
+────────────────────────
+● Version 8     You
+  10:32 AM
+
+● Version 7     Dr. Sharma
+  09:48 AM
+
+Yesterday
+────────────────────────
+● Version 6     Admin
+  04:21 PM
+
+And:
+
+[Preview Version] [Restore Version]
+
+This makes the CMS feel much more professional.
+
+7. Page statuses
+Don't just have:
+
+exists / doesn't exist
+
+Use:
+
+DRAFT
+PUBLISHED
+ARCHIVED
+
+Potentially later:
+
+DRAFT
+IN_REVIEW
+SCHEDULED
+PUBLISHED
+ARCHIVED
+
+This allows workflows such as:
+
+Faculty
+   │
+   │ create
+   ▼
+DRAFT
+   │
+   │ submit
+   ▼
+IN_REVIEW
+   │
+   │ admin approves
+   ▼
+PUBLISHED
+
+For your first version, though, I'd keep it simple:
+
+DRAFT → PUBLISHED
+
+8. Preview is extremely important
+You specifically mentioned preview.
+
+Don't build preview as:
+
+Save page → open public page
+
+Instead create a draft preview route.
+
+For example:
+
+/admin/pages/123/edit
+
+and:
+
+/admin/pages/123/preview
+
+The preview should render the exact same component that the public website uses.
+
+Something like:
+
+PageEditor
+     │
+     └── content JSON
+
+PublicPageRenderer
+     │
+     └── content JSON
+
+So:
+
+EDITOR
+   ↓
+Tiptap JSON
+   ↓
+Preview Renderer
+   ↓
+Actual Public Page
+
+This is much safer than maintaining separate rendering logic.
+
+9. Your editor
+This is where Tiptap comes in.
+
+I'd start with:
+
+Basic formatting
+Bold
+Italic
+Underline
+Strike
+Code
+Text color
+Highlight
+Headings
+Paragraph
+Heading 1
+Heading 2
+Heading 3
+Heading 4
+
+Lists
+Bullet list
+Ordered list
+Task/checklist list
+Alignment
+Left
+Center
+Right
+Justify
+
+Links
+User selects text:
+
+Visit our website
+
+Clicks:
+
+🔗
+
+Gets:
+
+URL: https://example.com
+
+Open in new tab: ✓
+
+[Insert]
+
+Media
+Toolbar:
+
+Image
+Video
+PDF
+Link
+
+Other useful things
+Blockquote
+Horizontal divider
+Table
+Undo
+Redo
+Clear formatting
+Search/replace eventually
+Keyboard shortcuts
+Drag/drop images
+Paste images
+10. Don't put every feature in the toolbar
+This is important for the Notion-like experience you're asking for.
+
+A giant toolbar like this:
+
+B I U S H1 H2 H3 H4 H5 H6
+A A A A A A
+☰ ☷ ≡ ...
+
+quickly becomes ugly.
+
+Instead use a compact toolbar:
+
++   Text   B   I   🔗   ...
+
+and a floating menu.
+
+For example, when they type:
+
+/
+
+show:
+
+Basic blocks
+
+/heading
+/paragraph
+/bullet list
+/numbered list
+/quote
+/divider
+
+Media
+
+/image
+/video
+/pdf
+/embed
+
+Advanced
+
+/table
+/code
+/callout
+
+That gets much closer to the Notion experience.
+
+11. Build a reusable Media Library
+Don't make users upload an image every time they create a page.
+
+Create:
+
+Admin
+ └── Media Library
+
+Example:
+
+Media Library
+
+[ Upload ]
+
+┌────────┐ ┌────────┐ ┌────────┐
+│ image  │ │ image  │ │ image  │
+│        │ │        │ │        │
+└────────┘ └────────┘ └────────┘
+
+college-building.jpg
+annual-function.jpg
+principal.jpg
+
+With:
+
+Search
+Filter
+Upload
+Delete
+Rename
+Copy URL
+
+Supabase Storage is a natural fit for this because it provides file storage, delivery and access controls.
+S
+Supabase
++1
+
+12. Don't store the image itself in Prisma
+Bad:
+
+Page
+ └── image = giant binary
+
+Instead:
+
+Supabase Storage
+
+college/
+   images/
+      college-building.jpg
+      principal.jpg
+
+documents/
+   admission/
+      admission-2026.pdf
+
+Database:
+
+Media
+────────────────────────────
+id
+filename
+storagePath
+mimeType
+size
+altText
+uploadedBy
+createdAt
+
+Then your Tiptap document references the media.
+
+For example:
+
+{
+  "type": "image",
+  "attrs": {
+    "src": "https://...",
+    "alt": "College building",
+    "title": "Main college building"
+  }
+}
+
+13. PDFs need special treatment
+Don't simply let faculty paste random PDF URLs everywhere.
+
+Create a PDF insert UI:
+
+Insert PDF
+
+[ Choose from Media Library ]
+
+or
+
+[ Upload PDF ]
+
+Display:
+
+○ Download link
+○ Embedded viewer
+
+Then the page can display:
+
+📄 Admission Brochure 2026
+
+[ View PDF ] [ Download ]
+
+14. YouTube videos
+For YouTube, don't download the video.
+
+Store the YouTube URL:
+
+https://www.youtube.com/watch?v=abc123
+
+Your editor converts it to an embed.
+
+Conceptually:
+
+{
+  "type": "youtube",
+  "attrs": {
+    "videoId": "abc123"
+  }
+}
+
+Then your renderer creates the iframe.
+
+You can also support:
+
+YouTube
+YouTube Shorts
+Vimeo
+
+later.
+
+15. Add SEO fields
+This is very important for a college website.
+
+Don't only have:
+
+Title
+Description
+Content
+
+Add:
+
+SEO
+
+SEO Title
+SEO Description
+OG Image
+
+For example:
+
+Page Title:
+Computer Science Department | ABC College
+
+SEO Title:
+Computer Science Department - ABC College
+
+SEO Description:
+Learn about the Computer Science Department, faculty,
+courses, facilities and academic programs at ABC College.
+
+OG Image:
+[ college-building.jpg ]
+
+This will help your public pages later.
+
+16. Add a slug
+Every page should have:
+
+Title:
+About Computer Science Department
+
+Slug:
+about-computer-science-department
+
+Public URL:
+
+/about-computer-science-department
+
+Or preferably, depending on your website:
+
+/departments/computer-science
+
+I'd actually recommend supporting a page hierarchy.
+
+For example:
+
+Departments
+    └── Computer Science
+         ├── Faculty
+         ├── Courses
+         ├── Facilities
+         └── Research
+
+That means your URL could become:
+
+/departments/computer-science
+/departments/computer-science/faculty
+/departments/computer-science/courses
+
+17. Add page templates
+This can make your CMS significantly better.
+
+Instead of forcing faculty to build every page from scratch, give them templates.
+
+For example:
+
+Create Page
+
+Choose template:
+
+┌────────────────────┐
+│ Blank Page         │
+├────────────────────┤
+│ Department         │
+├────────────────────┤
+│ Faculty Profile    │
+├────────────────────┤
+│ Notice             │
+├────────────────────┤
+│ Event              │
+├────────────────────┤
+│ Document           │
+└────────────────────┘

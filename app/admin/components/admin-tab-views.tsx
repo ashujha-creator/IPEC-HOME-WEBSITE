@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import UpdateHome from "./home-page";
 import AddmissionPage from "./addmission-page";
+import Pages from "./(pages)/Pages";
 
 interface TabViewsProps {
   activeTab: TabId;
@@ -36,6 +37,13 @@ export function AdminTabViews({ activeTab }: TabViewsProps) {
             </p>
           </CardContent>
         </Card>
+      );
+
+    case "pages":
+      return (
+        <>
+          <Pages />
+        </>
       );
 
     case "content":

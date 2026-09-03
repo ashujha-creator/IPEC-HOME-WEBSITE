@@ -19,6 +19,7 @@ export type TabId =
   | "content"
   | "faculty"
   | "resources"
+  | "gallery"
   | "addmissions";
 
 export interface TabItem {
@@ -36,6 +37,7 @@ export const ADMIN_TABS: TabItem[] = [
   { id: "faculty", label: "Faculty", icon: GraduationCap },
   { id: "resources", label: "Resources", icon: Folder },
   { id: "addmissions", label: "Addmissions", icon: UserPlus },
+  { id: "gallery", label: "Gallery", icon: FileText },
 ];
 
 interface AdminTabsProps {

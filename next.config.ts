@@ -17,6 +17,19 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       { protocol: "https", hostname: "*.supabase.co" },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
+      {
+        protocol: "https",
+        hostname: "ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
     ],
   },
   experimental: {

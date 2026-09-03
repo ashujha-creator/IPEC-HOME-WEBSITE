@@ -9,9 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import  Gallery  from "./gallery/Gallery";
 import UpdateHome from "./home-page";
 import AddmissionPage from "./addmission-page";
 import Pages from "./(pages)/Pages";
+import { GalleryForm } from "./gallery/gallery-form";
 
 interface TabViewsProps {
   activeTab: TabId;
@@ -49,17 +51,7 @@ export function AdminTabViews({ activeTab }: TabViewsProps) {
     case "content":
       return (
         <Card>
-          <CardHeader>
-            <CardTitle>Content Management</CardTitle>
-            <CardDescription>
-              Manage articles, blog posts, and site announcements.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              12 draft articles awaiting moderation.
-            </p>
-          </CardContent>
+          <GalleryForm />
         </Card>
       );
 
@@ -98,6 +90,8 @@ export function AdminTabViews({ activeTab }: TabViewsProps) {
       );
     case "addmissions":
       return <AddmissionPage />;
+    case "gallery":
+      return <Gallery />;
 
     default:
       return null;

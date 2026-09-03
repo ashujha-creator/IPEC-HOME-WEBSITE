@@ -23,6 +23,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
+  gallery      Gallery[]
   sessions      Session[]
   pages        Page[]
   @@index([id])
@@ -140,4 +141,22 @@ model Page {
   @@index([authorId])
   @@index([status])
   @@map("page")
+}
+
+model Gallery {
+  id               String     @id @default(cuid())
+  title            String
+  image            String[]    @db.Text
+  video            String?    @db.Text
+  description      String?    @db.Text
+  authorId         String
+  author           User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([id])
+   @@index([createdAt])
+   @@index([title])
+  @@index([authorId])
+  @@map("gallery")
 }

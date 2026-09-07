@@ -10,7 +10,7 @@ export type ActionResult = {
   message: string;
   errors?: Record<string, string[]>;
 };
-export const getLinks = cache(async (): Promise<Links | null> => {
+export const getLinks = async (): Promise<Links | null> => {
   try {
     const links = await prisma.links.findFirst();
     return links;
@@ -18,7 +18,7 @@ export const getLinks = cache(async (): Promise<Links | null> => {
     console.error("Failed to fetch links:", error);
     return null;
   }
-});
+};
 export async function upsertLinks(
   data: LinksFormValues,
 ): Promise<ActionResult> {

@@ -1,22 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
-
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
+import { defaultItems, type NavItem } from "@/lib/navigation/nav-items";
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
-
-export interface NavChildItem {
-  label: string;
-  href: string;
-}
-
-export interface NavItem {
-  label: string;
-  href: string;
-  /** Optional dropdown items — rendered only when provided */
-  children?: NavChildItem[];
-}
 
 export interface NavbarProps {
   items?: NavItem[];
@@ -26,34 +14,16 @@ export interface NavbarProps {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Default content (matches the design screenshot)                    */
+/* Desktop Nav Item (Recursive Hover Dropdown)                        */
 /* ------------------------------------------------------------------ */
-
-const defaultItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  { label: "Academics", href: "/academics" },
-  { label: "Admission", href: "/admission" },
-  { label: "For Students", href: "/for-students" },
-  { label: "Research & Development", href: "/research-development" },
-  {
-    label: "Innovation & Entrepreneurship",
-    href: "/innovation-entrepreneurship",
-  },
-  { label: "Institute Facilities", href: "/institute-facilities" },
-  { label: "Contact Us", href: "/contact-us" },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Desktop dropdown item                                              */
-/* ------------------------------------------------------------------ */
-
 function DesktopNavItem({
   item,
   isActive,
+  depth = 0,
 }: {
   item: NavItem;
   isActive: boolean;
+  depth?: number;
 }) {
   const [open, setOpen] = useState(false);
   const hasChildren = !!item.children?.length;
@@ -63,13 +33,16 @@ function DesktopNavItem({
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpen(true);
   };
+
   const scheduleClose = () => {
     closeTimer.current = setTimeout(() => setOpen(false), 120);
   };
 
+  const isTopLevel = depth === 0;
+
   return (
     <li
-      className="relative flex-1 px-1.5"
+      className="relative"
       onMouseEnter={hasChildren ? openMenu : undefined}
       onMouseLeave={hasChildren ? scheduleClose : undefined}
     >
@@ -79,45 +52,46 @@ function DesktopNavItem({
         aria-haspopup={hasChildren ? "true" : undefined}
         aria-expanded={hasChildren ? open : undefined}
         className={`
-          flex whitespace-nowrap px-3.5 py-3 text-[25px] font-medium
-          text-white/90 transition-colors duration-150 xl:text-[13.5px]
-          hover:bg-white/[0.08] hover:text-white
+          flex items-center justify-between whitespace-nowrap transition-colors duration-150
           focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
           focus-visible:outline-orange-400
+          ${
+            isTopLevel
+              ? "px-3.5 py-3 text-sm font-medium text-white/90 hover:bg-white/[0.08] hover:text-white"
+              : "px-4 py-2 text-sm text-white/85 hover:bg-white/[0.08] hover:text-white"
+          }
           ${isActive ? "bg-white/[0.08] text-white" : ""}
         `}
       >
-        {item.label}
-        {hasChildren && (
-          <ChevronDown
-            className="h-3.5 w-3.5 shrink-0"
-            strokeWidth={2}
-            aria-hidden="true"
-          />
-        )}
+        <span>{item.label}</span>
+        {hasChildren &&
+          (isTopLevel ? (
+            <ChevronDown
+              className="ml-1.5 h-3.5 w-3.5 shrink-0 opacity-80"
+              aria-hidden="true"
+            />
+          ) : (
+            <ChevronRight
+              className="ml-2 h-3.5 w-3.5 shrink-0 opacity-80"
+              aria-hidden="true"
+            />
+          ))}
       </a>
 
       {hasChildren && open && (
         <ul
-          className="
-            absolute left-0 top-full z-30 min-w-[240px] rounded-b-md bg-[#0B1550]
-            py-2 shadow-lg ring-1 ring-white/10
-          "
+          className={`
+            absolute z-30 min-w-[240px] rounded-md bg-[#0B1550] py-1.5 shadow-xl ring-1 ring-white/10
+            ${isTopLevel ? "left-0 top-full rounded-t-none" : "left-full top-0 ml-0.5"}
+          `}
         >
           {item.children!.map((child) => (
-            <li key={child.label}>
-              <a
-                href={child.href}
-                className="
-                  block px-4 py-2.5 text-[25px] text-white/85 transition-colors
-                  hover:bg-white/[0.08] hover:text-white
-                  focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
-                  focus-visible:outline-orange-400
-                "
-              >
-                {child.label}
-              </a>
-            </li>
+            <DesktopNavItem
+              key={child.label}
+              item={child}
+              isActive={isActive}
+              depth={depth + 1}
+            />
           ))}
         </ul>
       )}
@@ -126,15 +100,16 @@ function DesktopNavItem({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mobile accordion item                                              */
+/* Mobile Nav Item (Recursive Accordion)                              */
 /* ------------------------------------------------------------------ */
-
 function MobileNavItem({
   item,
   isActive,
+  depth = 0,
 }: {
   item: NavItem;
   isActive: boolean;
+  depth?: number;
 }) {
   const [open, setOpen] = useState(false);
   const hasChildren = !!item.children?.length;
@@ -146,7 +121,7 @@ function MobileNavItem({
           href={item.href}
           aria-current={isActive ? "page" : undefined}
           className={`
-            block rounded-md px-3 py-3 text-[14px] font-medium text-white/90
+            block rounded-md px-3 py-2.5 text-sm font-medium text-white/90
             transition-colors hover:bg-white/[0.08] hover:text-white
             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
             focus-visible:outline-orange-400
@@ -166,36 +141,30 @@ function MobileNavItem({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className="
-          flex w-full items-center justify-between rounded-md px-3 py-3 text-left
-          text-[14px] font-medium text-white/90 transition-colors
+          flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left
+          text-sm font-medium text-white/90 transition-colors
           hover:bg-white/[0.08] hover:text-white
           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
           focus-visible:outline-orange-400
         "
       >
-        {item.label}
+        <span>{item.label}</span>
         <ChevronDown
           className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           strokeWidth={2}
           aria-hidden="true"
         />
       </button>
+
       {open && (
-        <ul className="ml-2 border-l border-white/15 pl-3">
+        <ul className="ml-2.5 border-l border-white/15 pl-2 space-y-0.5 mt-0.5">
           {item.children!.map((child) => (
-            <li key={child.label}>
-              <a
-                href={child.href}
-                className="
-                  block rounded-md px-3 py-2.5 text-[13.5px] text-white/80
-                  transition-colors hover:bg-white/[0.08] hover:text-white
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-                  focus-visible:outline-orange-400
-                "
-              >
-                {child.label}
-              </a>
-            </li>
+            <MobileNavItem
+              key={child.label}
+              item={child}
+              isActive={isActive}
+              depth={depth + 1}
+            />
           ))}
         </ul>
       )}
@@ -232,9 +201,9 @@ export default function Navbar({
       aria-label="Primary"
       className={`relative z-40 bg-[#0B1550] ${className}`}
     >
-      <div className="mx-auto flex max-w-350 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Desktop menu */}
-        <ul className="hidden flex-1 items-center justify-center lg:flex">
+        <ul className="hidden flex-1 items-center justify-center space-x-1 lg:flex">
           {items.map((item) => (
             <DesktopNavItem
               key={item.label}
@@ -246,7 +215,7 @@ export default function Navbar({
 
         {/* Mobile toggle */}
         <div className="flex w-full items-center justify-between py-2.5 lg:hidden">
-          <span className="text-[13px] font-semibold text-white">Menu</span>
+          <span className="text-sm font-semibold text-white">Menu</span>
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
@@ -263,9 +232,9 @@ export default function Navbar({
             "
           >
             {mobileOpen ? (
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             ) : (
-              <Menu className="h-5 w-5" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
             )}
           </button>
         </div>
@@ -275,11 +244,11 @@ export default function Navbar({
       <div
         id="mobile-nav-panel"
         className={`
-          overflow-hidden bg-[#0B1550] transition-[max-height] duration-300 ease-in-out lg:hidden
-          ${mobileOpen ? "max-h-[80vh] overflow-y-auto" : "max-h-0"}
+          overflow-hidden bg-[#0B1550] transition-all duration-300 ease-in-out lg:hidden
+          ${mobileOpen ? "max-h-[85vh] overflow-y-auto border-t border-white/10" : "max-h-0"}
         `}
       >
-        <ul className="space-y-0.5 border-t border-white/10 px-3 py-3">
+        <ul className="space-y-1 px-4 py-3">
           {items.map((item) => (
             <MobileNavItem
               key={item.label}

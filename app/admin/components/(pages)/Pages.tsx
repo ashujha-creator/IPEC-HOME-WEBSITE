@@ -24,7 +24,7 @@ const menuItems: MenuItem[] = [
   {
     title: "All Pages",
     description: "Manage and view all your created site pages.",
-    href: "/admin/pages/all",
+    href: "/pages",
     icon: FileText,
     count: 24,
   },
@@ -35,18 +35,11 @@ const menuItems: MenuItem[] = [
     icon: PlusCircle,
   },
   {
-    title: "Drafts",
-    description: "Unpublished pages currently work in progress.",
-    href: "/admin/pages/drafts",
+    title: "ALL Links",
+    description: "All links currently work in progress.",
+    href: "/admin/pages/links",
     icon: FileEdit,
     count: 5,
-  },
-  {
-    title: "Published",
-    description: "Live pages accessible to your site visitors.",
-    href: "/admin/pages/published",
-    icon: CheckCircle2,
-    count: 19,
   },
   {
     title: "Trash",

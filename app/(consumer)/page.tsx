@@ -12,12 +12,22 @@ import EventsSection from "@/components/ui/EventsSection";
 import Footer from "../../components/ui/fotter";
 import LifeGallery from "@/components/ui/gallery";
 import AboutSection from "@/components/ui/about";
-export default function Home() {
+
+import { getLinks } from "@/app/actions/links"; // adjust path to match your project
+import { defaultItems } from "@/lib/navigation/nav-items";
+import { mapDatabaseLinks } from "@/lib/navigation/map-db-links";
+
+export default async function Home() {
+  const linksRecord = await getLinks();
+  const navItems = linksRecord
+    ? mapDatabaseLinks(defaultItems, linksRecord)
+    : defaultItems;
+
   return (
     <>
       <main>
         <Header />
-        <NavBar />
+        <NavBar items={navItems} />
         <Announcement />
         <Carousel />
         <AboutSection />

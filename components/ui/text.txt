@@ -1,0 +1,287 @@
+You are a senior Next.js + TypeScript engineer helping me integrate a feature into an existing project.
+
+I am a junior engineer, so please first understand my existing implementation before suggesting or making changes. Do not unnecessarily refactor unrelated code.
+
+Feature I need
+
+I currently have a hardcoded recursive navigation structure called defaultItems.
+
+Each navigation item looks approximately like:
+
+type NavItem = {
+  label: string;
+  href: string;
+  children?: NavItem[];
+};
+
+
+Example:
+
+const defaultItems: NavItem[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "About Us",
+    href: "/about-us",
+    children: [
+      {
+        label: "Overview",
+        href: "/about-us/overview",
+      },
+      {
+        label: "Recognition & Accreditations",
+        href: "/about-us/recognitions",
+        children: [
+          {
+            label: "NAAC Accreditation",
+            href: "/about-us/naac",
+          },
+          {
+            label: "NBA Accreditations",
+            href: "/about-us/nba",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+
+I now have a database record containing URLs for some of these pages.
+
+The DB response looks like:
+
+[
+  {
+    id: "cmtl8gw4t0000gkv0uzjwfvfa",
+    overview: "https://ipec-home-website.vercel.app/",
+    naac_accreditation: "",
+    nba_accreditation: "",
+    aicte: "",
+    dr_apj_abdul_kalam_technical_university: "",
+    vision_mission_quality_policy: "",
+    core_values: "",
+    governing_board: "",
+    management_committee: "",
+    chairman_message: "",
+    vice_chairman_message: "",
+    director_message: "",
+    deans_message: "",
+    organogram: "",
+    service_rules: "",
+    mandatory_disclosures: "",
+    committees: "",
+    academic_calendar: "",
+    international_conferences: "",
+    important_functionaries: "",
+    syllabus: "",
+    ordinances: "",
+    examination: "",
+    strategic_plan: "",
+    best_practices: "",
+    iqac_mom: "",
+    ssr_cycle: "",
+    extended_profile: "",
+    criterion_1: "",
+    criterion_2: "",
+    criterion_3: "",
+    criterion_4: "",
+    criterion_5: "",
+    criterion_6: "",
+    criterion_7: "",
+    naac_grade_sheet: "",
+    iiqa_reports: "",
+    institutional_distinctiveness: "",
+    feedback: "",
+    atr: "",
+    btech_cse: "",
+    btech_cse_ds: "",
+    btech_cse_aiml: "",
+    btech_cse_ai: "",
+    btech_it: "",
+    btech_ece: "",
+    btech_me: "",
+    mtech_cse: "",
+    bba: "",
+    bca: "",
+    mba: "",
+    mca: "",
+    important_notice: "",
+    btech_admission_counselling: "",
+    registration_form: "",
+    admission_documents: "",
+    fee_structure: "",
+    information_brochure: "",
+    ipec_newsletter: "",
+    student_handbook: "",
+    mode_of_payment: "",
+    udbhav_2026: "",
+    sports_fest_2026: "",
+    hackathon: "",
+    scholarship_aicte: "",
+    scholarship_up_india: "",
+    scholarship_nsp: "",
+    old_question_papers: "",
+    student_verification: "",
+    student_society: "",
+    students_rewards: "",
+    student_counselling: "",
+    students_gallery: "",
+    ipec_erp: "",
+    key_alumni_ce: "",
+    key_alumni_ece: "",
+    key_alumni_cs: "",
+    key_alumni_eee: "",
+    key_alumni_it: "",
+    key_alumni_ash: "",
+    key_alumni_me: "",
+    notices_for_passout_students: "",
+    mdp: "",
+    fdp_2026: "",
+    case_writing_workshop_2026: "",
+    iciscs: "",
+    projects: "",
+    ipec_jst: "",
+    outreach_activities: "",
+    about_ipec_tbi: "",
+    tbi_services: "",
+    funded_projects: "",
+    our_startups: "",
+    tbi_events: "",
+    tbi_recognitions: "",
+    training_and_placement: "",
+    placement_director_message: "",
+    placement_testimonials: "",
+    recruiters: "",
+    placement_guidelines_policy: "",
+    placement_gallery: "",
+    placement_record: "",
+    contact_us: "",
+    createdAt: "2026-09-03 07:58:32.622",
+    updatedAt: "2026-09-03 08:08:32.527"
+  }
+]
+
+Desired behavior
+
+I want the database URL to override the hardcoded href when a database URL exists.
+
+For example:
+
+overview: "https://ipec-home-website.vercel.app/"
+
+
+should result in:
+
+{
+  label: "Overview",
+  href: "https://ipec-home-website.vercel.app/"
+}
+
+
+But if:
+
+naac_accreditation: ""
+
+
+then the existing hardcoded route should remain:
+
+{
+  label: "NAAC Accreditation",
+  href: "/about-us/naac"
+}
+
+
+In other words:
+
+DB URL exists
+    ↓
+use DB URL
+
+DB URL is empty/null/undefined
+    ↓
+use existing hardcoded href
+
+
+This needs to work recursively at any depth because defaultItems contains nested children.
+
+Preferred implementation
+
+I am considering adding an optional dbKey to each NavItem:
+
+type NavItem = {
+  label: string;
+  href: string;
+  dbKey?: keyof PageLinks;
+  children?: NavItem[];
+};
+
+
+For example:
+
+{
+  label: "Overview",
+  href: "/about-us/overview",
+  dbKey: "overview",
+}
+
+
+and:
+
+{
+  label: "NAAC Accreditation",
+  href: "/about-us/naac",
+  dbKey: "naac_accreditation",
+}
+
+
+Then recursively transform the navigation:
+
+function mapDatabaseLinks(
+  items: NavItem[],
+  dbData: PageLinks
+): NavItem[] {
+  return items.map((item) => {
+    const dbUrl = item.dbKey ? dbData[item.dbKey] : "";
+
+    return {
+      ...item,
+      href: dbUrl?.trim() ? dbUrl : item.href,
+      children: item.children
+        ? mapDatabaseLinks(item.children, dbData)
+        : undefined,
+    };
+  });
+}
+
+
+However, do NOT assume this is the best implementation. Inspect my existing code first and recommend the cleanest solution for my architecture.
+
+Important requirements
+Do not mutate defaultItems directly.
+Keep the existing hardcoded routes as fallbacks.
+Only override href when the DB value is a non-empty URL/string.
+Handle null, undefined, and empty strings safely.
+Preserve the recursive children structure.
+Keep TypeScript types strict.
+Avoid any unless there is a very strong reason.
+Do not refactor unrelated components.
+Make the solution compatible with my existing Next.js architecture.
+If there is a better approach than adding dbKey manually to every item, explain it and compare the tradeoffs.
+Pay special attention to the fact that the DB field names and navigation labels are not always identical.
+Do not generate a huge replacement for my entire project. Give me focused changes/files.
+What I want from you
+
+First, inspect the code/files I provide.
+
+Then:
+
+Explain how my current navigation works.
+Identify exactly where the DB URL mapping should happen.
+Recommend the best implementation.
+Show the exact files that need to change.
+Give me the modified code.
+Explain each important change in junior-friendly language.
+Point out any potential Next.js/TypeScript issues.
+Tell me how to test the feature.
+Include edge cases I should test.
+

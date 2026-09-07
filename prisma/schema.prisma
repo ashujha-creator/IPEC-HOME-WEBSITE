@@ -160,3 +160,138 @@ model Gallery {
   @@index([authorId])
   @@map("gallery")
 }
+model Links {
+  id                                      String    @id @default(cuid())
+
+  // --- About Us ---
+  overview                                String?   @db.Text
+  naac_accreditation                      String?   @db.Text
+  nba_accreditation                       String?   @db.Text
+  aicte                                   String?   @db.Text
+  dr_apj_abdul_kalam_technical_university String?   @db.Text
+  vision_mission_quality_policy           String?   @db.Text
+  core_values                             String?   @db.Text
+  governing_board                         String?   @db.Text
+  management_committee                    String?   @db.Text
+  chairman_message                        String?   @db.Text
+  vice_chairman_message                   String?   @db.Text
+  director_message                        String?   @db.Text
+  deans_message                           String?   @db.Text
+  organogram                              String?   @db.Text
+  service_rules                           String?   @db.Text
+  mandatory_disclosures                   String?   @db.Text
+  committees                              String?   @db.Text
+
+  // --- Academics ---
+  academic_calendar                       String?   @db.Text
+  international_conferences               String?   @db.Text
+  important_functionaries                 String?   @db.Text
+  syllabus                                String?   @db.Text
+  ordinances                              String?   @db.Text
+  examination                             String?   @db.Text
+  strategic_plan                          String?   @db.Text
+  best_practices                          String?   @db.Text
+
+  // IQAC Sub-section
+  iqac_mom                                String?   @db.Text
+  ssr_cycle                               String?   @db.Text
+  extended_profile                        String?   @db.Text
+  criterion_1                             String?   @db.Text
+  criterion_2                             String?   @db.Text
+  criterion_3                             String?   @db.Text
+  criterion_4                             String?   @db.Text
+  criterion_5                             String?   @db.Text
+  criterion_6                             String?   @db.Text
+  criterion_7                             String?   @db.Text
+  naac_grade_sheet                        String?   @db.Text
+  iiqa_reports                            String?   @db.Text
+  institutional_distinctiveness           String?   @db.Text
+  feedback                                String?   @db.Text
+  atr                                     String?   @db.Text
+
+  // Academic Courses
+  btech_cse                               String?   @db.Text
+  btech_cse_ds                            String?   @db.Text
+  btech_cse_aiml                          String?   @db.Text
+  btech_cse_ai                            String?   @db.Text
+  btech_it                                String?   @db.Text
+  btech_ece                               String?   @db.Text
+  btech_me                                String?   @db.Text
+  mtech_cse                               String?   @db.Text
+  bba                                     String?   @db.Text
+  bca                                     String?   @db.Text
+  mba                                     String?   @db.Text
+  mca                                     String?   @db.Text
+
+  // --- Admissions ---
+  important_notice                        String?   @db.Text
+  btech_admission_counselling             String?   @db.Text
+  registration_form                       String?   @db.Text
+  admission_documents                     String?   @db.Text
+  fee_structure                           String?   @db.Text
+  information_brochure                    String?   @db.Text
+  ipec_newsletter                         String?   @db.Text
+  student_handbook                        String?   @db.Text
+  mode_of_payment                         String?   @db.Text
+
+  // --- For Students ---
+  udbhav_2026                             String?   @db.Text
+  sports_fest_2026                        String?   @db.Text
+  hackathon                               String?   @db.Text
+  scholarship_aicte                       String?   @db.Text
+  scholarship_up_india                    String?   @db.Text
+  scholarship_nsp                         String?   @db.Text
+  old_question_papers                     String?   @db.Text
+  student_verification                    String?   @db.Text
+  student_society                         String?   @db.Text
+  students_rewards                        String?   @db.Text
+  student_counselling                     String?   @db.Text
+  students_gallery                        String?   @db.Text
+  ipec_erp                                String?   @db.Text
+
+  // Alumni
+  key_alumni_ce                           String?   @db.Text
+  key_alumni_ece                          String?   @db.Text
+  key_alumni_cs                           String?   @db.Text
+  key_alumni_eee                          String?   @db.Text
+  key_alumni_it                           String?   @db.Text
+  key_alumni_ash                          String?   @db.Text
+  key_alumni_me                           String?   @db.Text
+  notices_for_passout_students            String?   @db.Text
+
+  // --- Research & Development ---
+  mdp                                     String?   @db.Text
+  fdp_2026                                String?   @db.Text
+  case_writing_workshop_2026              String?   @db.Text
+  iciscs                                  String?   @db.Text
+  projects                                String?   @db.Text
+  ipec_jst                                String?   @db.Text
+  outreach_activities                     String?   @db.Text
+
+  // --- Innovation & Entrepreneurship ---
+  about_ipec_tbi                          String?   @db.Text
+  tbi_services                            String?   @db.Text
+  funded_projects                         String?   @db.Text
+  our_startups                            String?   @db.Text
+  tbi_events                              String?   @db.Text
+  tbi_recognitions                        String?   @db.Text
+
+  // --- Placement ---
+  training_and_placement                  String?   @db.Text
+  placement_director_message              String?   @db.Text
+  placement_testimonials                  String?   @db.Text
+  recruiters                              String?   @db.Text
+  placement_guidelines_policy             String?   @db.Text
+  placement_gallery                       String?   @db.Text
+  placement_record                        String?   @db.Text
+
+  // --- Contact Us ---
+  contact_us                              String?   @db.Text
+
+  createdAt                               DateTime  @default(now())
+  updatedAt                               DateTime  @updatedAt
+
+  @@index([id])
+  @@index([createdAt])
+  @@map("links")
+}

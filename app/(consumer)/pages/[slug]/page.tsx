@@ -88,6 +88,27 @@ export default async function PostPage({ params }: PostPageProps) {
   if (!post) {
     notFound();
   }
+
+  const hasSingleImage =
+    post.image && post.image.length === 1 && post.image[0] !== null;
+  const hasNoContent =
+    !post.content ||
+    (typeof post.content === "object" &&
+      Object.keys(post.content).length === 0);
+
+  if (hasSingleImage && hasNoContent) {
+    return (
+      <div
+        className="relative min-h-[500px] bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url("${post.image[0]}")`,
+        }}
+      >
+        {/* Render the image's data/content here */}
+      </div>
+    );
+  }
+
   return (
     <main>
       <PostHeader

@@ -1,6 +1,12 @@
 import { createRouteHandler } from "uploadthing/next";
-import { ourFileRouter } from "./core";
+import { ourFileRouter, siteUploadRouter } from "./core";
+
+// Combine both routers into a single router map
+export const combinedRouter = {
+  ...ourFileRouter,
+  ...siteUploadRouter,
+};
 
 export const { GET, POST } = createRouteHandler({
-  router: ourFileRouter,
+  router: combinedRouter,
 });

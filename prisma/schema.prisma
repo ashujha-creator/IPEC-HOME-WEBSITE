@@ -26,6 +26,7 @@ model User {
   gallery      Gallery[]
   sessions      Session[]
   pages        Page[]
+   sites         Site[]
   @@index([id])
   @@index([name])
   @@index([email])
@@ -294,4 +295,48 @@ model Links {
   @@index([id])
   @@index([createdAt])
   @@map("links")
+}
+
+// schema.prisma
+
+enum SiteStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+model Site {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  ownerId     String     // adjust type/relation to match your User model
+  entryFile   String     @default("index.html")
+  status      SiteStatus @default(ACTIVE)
+  totalBytes  Int        @default(0)   // running total, enforced at upload time (Stage 4/7)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  files       SiteFile[]
+
+  @@index([ownerId])
+  @@index([status])
+}
+
+model SiteFile {
+  id          String   @id @default(cuid())
+  siteId      String
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  path        String   // normalized, e.g. "index.html", "assets/logo.png" — no leading slash
+  contentType String
+  size        Int
+  storageKey  String   // UploadThing file key
+  storageUrl  String   // UploadThing CDN URL (for direct-serving static assets in Stage 5)
+  checksum    String   // sha256, for de-dup / integrity checks
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([siteId, path])
+  @@index([siteId])
 }

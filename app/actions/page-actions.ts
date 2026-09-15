@@ -11,6 +11,7 @@ import {
 } from "@/lib/vaildation/blog";
 import { generateSlug } from "@/lib/slugify";
 import { PageStatus } from "../generated/prisma/enums";
+import { deleteMultipleMediaFromSupabase } from "@/lib/supabase-upload";
 
 // Partial version of the server schema, for update payloads —
 // every field optional, but whatever IS present still gets validated.
@@ -218,6 +219,53 @@ export async function updatePageAction(
 /**
  * Server Action: Delete a Page by ID
  */
+// export async function deletePageAction(id: string): Promise<ActionState<null>> {
+//   try {
+//     const session = await auth.api.getSession({
+//       headers: await headers(),
+//     });
+
+//     if (!session || !session.user) {
+//       return { success: false, message: "Unauthorized." };
+//     }
+
+//     const existingPage = await prisma.page.findUnique({
+//       where: { id },
+//       select: { slug: true, authorId: true },
+//     });
+
+//     if (!existingPage) {
+//       return { success: false, message: "Page not found." };
+//     }
+
+//     if (existingPage.authorId !== session.user.id) {
+//       return {
+//         success: false,
+//         message: "You are not authorized to delete this page.",
+//       };
+//     }
+
+//     const deletedPage = await prisma.page.delete({
+//       where: { id },
+//       select: { slug: true },
+//     });
+
+//     revalidatePath("/admin/pages/all");
+//     revalidatePath(`/blog/${deletedPage.slug}`);
+
+//     return {
+//       success: true,
+//       message: "Page deleted successfully.",
+//     };
+//   } catch (error: unknown) {
+//     console.error("[DELETE_PAGE_ERROR]:", error);
+//     return {
+//       success: false,
+//       message: (error as Error).message || "Failed to delete page.",
+//     };
+//   }
+// }
+
 export async function deletePageAction(id: string): Promise<ActionState<null>> {
   try {
     const session = await auth.api.getSession({
@@ -228,9 +276,9 @@ export async function deletePageAction(id: string): Promise<ActionState<null>> {
       return { success: false, message: "Unauthorized." };
     }
 
+    // 1. Fetch the page along with media paths needed for Supabase deletion
     const existingPage = await prisma.page.findUnique({
       where: { id },
-      select: { slug: true, authorId: true },
     });
 
     if (!existingPage) {
@@ -244,11 +292,16 @@ export async function deletePageAction(id: string): Promise<ActionState<null>> {
       };
     }
 
-    const deletedPage = await prisma.page.delete({
-      where: { id },
-      select: { slug: true },
-    });
-
+    const media: string[] = existingPage.image;
+    const [_, deletedPage] = await Promise.all([
+      media.length > 0
+        ? deleteMultipleMediaFromSupabase(media)
+        : Promise.resolve(null),
+      prisma.page.delete({
+        where: { id },
+        select: { slug: true },
+      }),
+    ]);
     revalidatePath("/admin/pages/all");
     revalidatePath(`/blog/${deletedPage.slug}`);
 

@@ -10,6 +10,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AdminUserMenu } from "./AdminNavbar";
 
 // Types
 export type TabId =
@@ -75,6 +76,7 @@ export function AdminTabs({ activeTab, onTabChange }: AdminTabsProps) {
               </button>
             );
           })}
+          <AdminUserMenu />
         </div>
       </div>
     </div>

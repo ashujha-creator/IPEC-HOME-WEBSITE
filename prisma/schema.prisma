@@ -340,3 +340,51 @@ model SiteFile {
   @@unique([siteId, path])
   @@index([siteId])
 }
+
+enum PlaygroundStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Playground {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String?
+  status      PlaygroundStatus  @default(DRAFT)
+  entryFile   String            @default("index.html")
+  totalBytes  Int               @default(0)
+
+  // References User.id at the application level — not a Prisma relation,
+  // so your existing User model stays untouched.
+  ownerId     String
+
+  files       PlaygroundFile[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+  @@map("playground")
+}
+
+model PlaygroundFile {
+  id            String     @id @default(cuid())
+  playgroundId  String
+  playground    Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  path          String     // normalized, e.g. "index.html", "assets/logo.png" — no leading slash
+  contentType   String
+  size          Int
+  bucket        String     // Supabase Storage bucket name
+  storagePath   String     // full object key, e.g. "playgrounds/<ownerId>/<slug>/index.html"
+  checksum      String     // sha256, for de-dup / change detection on re-publish (Stage 4)
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@unique([playgroundId, path])   // also serves as the lookup index for playgroundId alone
+  @@index([checksum])
+  @@map("playground_file")
+}

@@ -21,7 +21,7 @@ export default function DashboardPage() {
     <div className="heloo">
       {" "}
       <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
-      <main className="container p-4 md:p-6">
+      <main className="container p-4 md:p-6 w-full h-full">
         <AdminTabViews activeTab={activeTab} />
       </main>
     </div>

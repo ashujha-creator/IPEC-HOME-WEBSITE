@@ -17,6 +17,8 @@ export function ImageUploader({
   onChange,
   maxFiles = 10,
 }: ImageUploaderProps) {
+
+  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;

@@ -14,7 +14,7 @@ const ALLOWED_MIME_TYPES = new Set([
 function resolveExtension(file: File | Blob): string {
   if ("name" in file && file.name.includes(".")) {
     const rawExt = file.name.split(".").pop() || "";
-    // Strip anything that isn't a safe extension character.
+     //Strip anything that isn't a safe extension character.
     const safeExt = rawExt.toLowerCase().replace(/[^a-z0-9]/g, "");
     if (safeExt) return safeExt === "svg" ? "svg" : safeExt;
   }
@@ -102,3 +102,80 @@ export async function uploadMultipleMediaToSupabase(
 
   return { urls, errors };
 }
+
+function extractStoragePath(urlOrPath: string, bucketName: string = BUCKET_NAME): string {
+  if (!urlOrPath) return "";
+  const marker = `${bucketName}/`;
+  if (urlOrPath.includes(marker)) {
+    return urlOrPath.substring(urlOrPath.indexOf(marker) + marker.length);
+  }
+  return urlOrPath.trim();
+}
+
+/**
+ * Deletes a single file from Supabase Storage given its path or full public URL.
+ */
+ export async function deleteMediaFromSupabase(
+   urlOrPath: string,
+ ): Promise<{ success: boolean; error: string | null }> {
+   try {
+     const path = extractStoragePath(urlOrPath);
+
+     if (!path) {
+       return { success: false, error: "Invalid path or URL provided." };
+     }
+
+     const { error } = await supabaseAdmin.storage
+       .from(BUCKET_NAME)
+       .remove([path]);
+
+     if (error) {
+       return { success: false, error: error.message };
+     }
+
+     return { success: true, error: null };
+   } catch (err: unknown) {
+     return {
+       success: false,
+       error: (err as Error).message || "File deletion failed.",
+     };
+   }
+ }
+
+ /**
+  * Deletes multiple files concurrently from Supabase Storage.
+  * Accepts an array of full public URLs or relative file paths.
+  */
+ export async function deleteMultipleMediaFromSupabase(
+   urlsOrPaths: string[],
+ ): Promise<{ successCount: number; errors: string[] }> {
+   try {
+      //Clean and extract paths for batch removal
+     const paths = urlsOrPaths
+       .map((item) => extractStoragePath(item))
+       .filter(Boolean);
+
+     if (!paths.length) {
+       return { successCount: 0, errors: ["No valid file paths provided."] };
+     }
+
+      //Supabase supports batch removal in a single operation
+     const { data, error } = await supabaseAdmin.storage
+       .from(BUCKET_NAME)
+       .remove(paths);
+
+     if (error) {
+       return { successCount: 0, errors: [error.message] };
+     }
+
+     return {
+       successCount: data ? data.length : 0,
+       errors: [],
+     };
+   } catch (err: unknown) {
+     return {
+       successCount: 0,
+       errors: [(err as Error).message || "Batch deletion failed."],
+     };
+   }
+ }

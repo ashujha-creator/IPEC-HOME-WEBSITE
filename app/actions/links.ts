@@ -1,28 +1,31 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma"; // Import your Prisma Client instance
+import { prisma } from "@/lib/prisma";
 import { linksSchema, LinksFormValues } from "@/lib/vaildation/links";
 import type { Links } from "@/app/generated/prisma/client";
-import { cache } from "react";
+
 export type ActionResult = {
   success: boolean;
   message: string;
   errors?: Record<string, string[]>;
 };
+
+// The Links table has exactly one row, ever, pinned to this fixed id.
+const SINGLETON_LINKS_ID = "site-links-singleton";
+
 export const getLinks = async (): Promise<Links | null> => {
   try {
-    const links = await prisma.links.findFirst();
-    return links;
+    return await prisma.links.findUnique({ where: { id: SINGLETON_LINKS_ID } });
   } catch (error) {
     console.error("Failed to fetch links:", error);
     return null;
   }
 };
+
 export async function upsertLinks(
   data: LinksFormValues,
 ): Promise<ActionResult> {
-  // 1. Server-side validation
   const validatedFields = linksSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -33,32 +36,17 @@ export async function upsertLinks(
     };
   }
 
-  const { id, ...payload } = validatedFields.data;
+  const { id: _clientId, ...payload } = validatedFields.data;
 
   try {
-    if (id) {
-      // Update existing record
-      await prisma.links.update({
-        where: { id },
-        data: payload,
-      });
-    } else {
-      // Create new record or update the single existing record if singleton pattern
-      const existingRecord = await prisma.links.findFirst();
+    await prisma.links.upsert({
+      where: { id: SINGLETON_LINKS_ID },
+      update: payload,
+      create: { id: SINGLETON_LINKS_ID, ...payload },
+    });
 
-      if (existingRecord) {
-        await prisma.links.update({
-          where: { id: existingRecord.id },
-          data: payload,
-        });
-      } else {
-        await prisma.links.create({
-          data: payload,
-        });
-      }
-    }
-
-    revalidatePath("/admin/links");
+    revalidatePath("/");
+    revalidatePath("/admin/pages/links");
 
     return {
       success: true,

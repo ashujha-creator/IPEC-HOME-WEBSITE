@@ -1,33 +1,61 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
-import { defaultItems, type NavItem } from "@/lib/navigation/nav-items";
+import type { NavItem } from "@/lib/navigation/nav-items";
+
 /* ------------------------------------------------------------------ */
-/*  Types                                                              */
+/*  Types                                                             */
 /* ------------------------------------------------------------------ */
 
 export interface NavbarProps {
-  items?: NavItem[];
-  /** Href/label of the currently active page, used to highlight it */
+  items: NavItem[];
+  /** Href of the currently active page. Defaults to the current route. */
   activeHref?: string;
   className?: string;
 }
 
 /* ------------------------------------------------------------------ */
-/* Desktop Nav Item (Recursive Hover Dropdown)                        */
+/* Desktop Nav Item (Recursive Hover + Click Dropdown)                 */
 /* ------------------------------------------------------------------ */
 function DesktopNavItem({
   item,
-  isActive,
+  activeHref,
   depth = 0,
 }: {
   item: NavItem;
-  isActive: boolean;
+  activeHref: string;
   depth?: number;
 }) {
   const [open, setOpen] = useState(false);
   const hasChildren = !!item.children?.length;
+  const isActive = item.href === activeHref;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLLIElement>(null);
+
+  // Clear any pending close timer on unmount.
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  // Close when clicking outside — needed for the click-to-open path below.
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(e: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [open]);
 
   const openMenu = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -42,41 +70,55 @@ function DesktopNavItem({
 
   return (
     <li
+      ref={containerRef}
       className="relative"
       onMouseEnter={hasChildren ? openMenu : undefined}
       onMouseLeave={hasChildren ? scheduleClose : undefined}
     >
-      <a
-        href={item.href}
-        aria-current={isActive ? "page" : undefined}
-        aria-haspopup={hasChildren ? "true" : undefined}
-        aria-expanded={hasChildren ? open : undefined}
-        className={`
-          flex items-center justify-between whitespace-nowrap transition-colors duration-150
-          focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
-          focus-visible:outline-orange-400
-          ${
-            isTopLevel
-              ? "px-3.5 py-3 text-sm font-medium text-white/90 hover:bg-white/[0.08] hover:text-white"
-              : "px-4 py-2 text-sm text-white/85 hover:bg-white/[0.08] hover:text-white"
-          }
-          ${isActive ? "bg-white/[0.08] text-white" : ""}
-        `}
-      >
-        <span>{item.label}</span>
-        {hasChildren &&
-          (isTopLevel ? (
-            <ChevronDown
-              className="ml-1.5 h-3.5 w-3.5 shrink-0 opacity-80"
-              aria-hidden="true"
-            />
-          ) : (
-            <ChevronRight
-              className="ml-2 h-3.5 w-3.5 shrink-0 opacity-80"
-              aria-hidden="true"
-            />
-          ))}
-      </a>
+      <div className="flex items-center">
+        <Link
+          href={item.href || "#"}
+          aria-current={isActive ? "page" : undefined}
+          className={`
+            flex-1 whitespace-nowrap transition-colors duration-150
+            focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
+            focus-visible:outline-orange-400
+            ${
+              isTopLevel
+                ? "px-3.5 py-3 text-sm font-medium text-white/90 hover:bg-white/[0.08] hover:text-white"
+                : "px-4 py-2 text-sm text-white/85 hover:bg-white/[0.08] hover:text-white"
+            }
+            ${isActive ? "bg-white/[0.08] text-white" : ""}
+          `}
+        >
+          {item.label}
+        </Link>
+
+        {hasChildren && (
+          <button
+            type="button"
+            aria-label={`Toggle ${item.label} submenu`}
+            aria-haspopup="true"
+            aria-expanded={open}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen((v) => !v);
+            }}
+            className={`
+              flex shrink-0 items-center justify-center text-white/80 hover:text-white
+              focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
+              focus-visible:outline-orange-400
+              ${isTopLevel ? "px-2 py-3" : "px-3 py-2"}
+            `}
+          >
+            {isTopLevel ? (
+              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+          </button>
+        )}
+      </div>
 
       {hasChildren && open && (
         <ul
@@ -89,7 +131,7 @@ function DesktopNavItem({
             <DesktopNavItem
               key={child.label}
               item={child}
-              isActive={isActive}
+              activeHref={activeHref}
               depth={depth + 1}
             />
           ))}
@@ -104,21 +146,22 @@ function DesktopNavItem({
 /* ------------------------------------------------------------------ */
 function MobileNavItem({
   item,
-  isActive,
+  activeHref,
   depth = 0,
 }: {
   item: NavItem;
-  isActive: boolean;
+  activeHref: string;
   depth?: number;
 }) {
   const [open, setOpen] = useState(false);
   const hasChildren = !!item.children?.length;
+  const isActive = item.href === activeHref;
 
   if (!hasChildren) {
     return (
       <li>
-        <a
-          href={item.href}
+        <Link
+          href={item.href || "#"}
           aria-current={isActive ? "page" : undefined}
           className={`
             block rounded-md px-3 py-2.5 text-sm font-medium text-white/90
@@ -129,7 +172,7 @@ function MobileNavItem({
           `}
         >
           {item.label}
-        </a>
+        </Link>
       </li>
     );
   }
@@ -157,12 +200,12 @@ function MobileNavItem({
       </button>
 
       {open && (
-        <ul className="ml-2.5 border-l border-white/15 pl-2 space-y-0.5 mt-0.5">
+        <ul className="ml-2.5 space-y-0.5 border-l border-white/15 pl-2 mt-0.5">
           {item.children!.map((child) => (
             <MobileNavItem
               key={child.label}
               item={child}
-              isActive={isActive}
+              activeHref={activeHref}
               depth={depth + 1}
             />
           ))}
@@ -173,17 +216,18 @@ function MobileNavItem({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Navbar                                                              */
+/*  Navbar                                                            */
 /* ------------------------------------------------------------------ */
 
 export default function Navbar({
-  items = defaultItems,
-  activeHref = "/",
+  items,
+  activeHref,
   className = "",
 }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const resolvedActiveHref = activeHref ?? pathname ?? "/";
 
-  // Close the mobile menu on Escape and lock body scroll while it's open.
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setMobileOpen(false);
@@ -202,18 +246,16 @@ export default function Navbar({
       className={`relative z-40 bg-[#0B1550] ${className}`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Desktop menu */}
         <ul className="hidden flex-1 items-center justify-center space-x-1 lg:flex">
           {items.map((item) => (
             <DesktopNavItem
               key={item.label}
               item={item}
-              isActive={item.href === activeHref}
+              activeHref={resolvedActiveHref}
             />
           ))}
         </ul>
 
-        {/* Mobile toggle */}
         <div className="flex w-full items-center justify-between py-2.5 lg:hidden">
           <span className="text-sm font-semibold text-white">Menu</span>
           <button
@@ -240,7 +282,6 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile panel */}
       <div
         id="mobile-nav-panel"
         className={`
@@ -253,7 +294,7 @@ export default function Navbar({
             <MobileNavItem
               key={item.label}
               item={item}
-              isActive={item.href === activeHref}
+              activeHref={resolvedActiveHref}
             />
           ))}
         </ul>

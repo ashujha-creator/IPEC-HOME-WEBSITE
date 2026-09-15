@@ -8,12 +8,5 @@ export default function TourLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <section className="w-full min-h-screen">
-      <Header />
-      <Navbar />
-      {children}
-      <Footer />
-    </section>
-  );
+  return <section className="w-full min-h-screen">{children}</section>;
 }

@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/providers/query-provider";
+import Navbar from "@/components/ui/nav";
+import { getLinks } from "./actions/links";
+import Header from "@/components/ui/header";
+import { defaultItems } from "@/lib/navigation/nav-items";
+import { mapDatabaseLinks } from "@/lib/navigation/map-db-links";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,13 +38,19 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+    const linksRecord = await getLinks();
+  const navItems = linksRecord
+    ? mapDatabaseLinks(defaultItems, linksRecord)
+    : defaultItems;
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+             <Header />
+          <Navbar items={navItems} />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

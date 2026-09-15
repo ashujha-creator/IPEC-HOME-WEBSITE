@@ -89,7 +89,10 @@ export function GalleryForm({ onSuccess }: { onSuccess?: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"
+    >
       {serverError && (
         <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-950/20 rounded-md border border-red-200 dark:border-red-800">
           {serverError}

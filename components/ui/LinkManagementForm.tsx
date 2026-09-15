@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useTransition, useState } from "react";
+import React, { useEffect, useTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -244,128 +243,45 @@ const SECTIONS: { id: string; title: string; fields: FieldGroup[] }[] = [
   },
 ];
 
+const ALL_FIELD_NAMES = SECTIONS.flatMap((section) =>
+  section.fields.map((field) => field.name),
+);
+
+const EMPTY_DEFAULTS = Object.fromEntries(
+  ["id", ...ALL_FIELD_NAMES].map((key) => [key, ""]),
+) as LinksFormValues;
+
 export function LinkManagementForm({ initialData }: LinkManagementFormProps) {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<ActionResult | null>(null);
 
   const form = useForm<LinksFormValues>({
     resolver: zodResolver(linksSchema),
-    defaultValues: initialData || {
-      id: "",
-      overview: "",
-      naac_accreditation: "",
-      nba_accreditation: "",
-      aicte: "",
-      dr_apj_abdul_kalam_technical_university: "",
-      vision_mission_quality_policy: "",
-      core_values: "",
-      governing_board: "",
-      management_committee: "",
-      chairman_message: "",
-      vice_chairman_message: "",
-      director_message: "",
-      deans_message: "",
-      organogram: "",
-      service_rules: "",
-      mandatory_disclosures: "",
-      committees: "",
-      academic_calendar: "",
-      international_conferences: "",
-      important_functionaries: "",
-      syllabus: "",
-      ordinances: "",
-      examination: "",
-      strategic_plan: "",
-      best_practices: "",
-      iqac_mom: "",
-      ssr_cycle: "",
-      extended_profile: "",
-      criterion_1: "",
-      criterion_2: "",
-      criterion_3: "",
-      criterion_4: "",
-      criterion_5: "",
-      criterion_6: "",
-      criterion_7: "",
-      naac_grade_sheet: "",
-      iiqa_reports: "",
-      institutional_distinctiveness: "",
-      feedback: "",
-      atr: "",
-      btech_cse: "",
-      btech_cse_ds: "",
-      btech_cse_aiml: "",
-      btech_cse_ai: "",
-      btech_it: "",
-      btech_ece: "",
-      btech_me: "",
-      mtech_cse: "",
-      bba: "",
-      bca: "",
-      mba: "",
-      mca: "",
-      important_notice: "",
-      btech_admission_counselling: "",
-      registration_form: "",
-      admission_documents: "",
-      fee_structure: "",
-      information_brochure: "",
-      ipec_newsletter: "",
-      student_handbook: "",
-      mode_of_payment: "",
-      udbhav_2026: "",
-      sports_fest_2026: "",
-      hackathon: "",
-      scholarship_aicte: "",
-      scholarship_up_india: "",
-      scholarship_nsp: "",
-      old_question_papers: "",
-      student_verification: "",
-      student_society: "",
-      students_rewards: "",
-      student_counselling: "",
-      students_gallery: "",
-      ipec_erp: "",
-      key_alumni_ce: "",
-      key_alumni_ece: "",
-      key_alumni_cs: "",
-      key_alumni_eee: "",
-      key_alumni_it: "",
-      key_alumni_ash: "",
-      key_alumni_me: "",
-      notices_for_passout_students: "",
-      mdp: "",
-      fdp_2026: "",
-      case_writing_workshop_2026: "",
-      iciscs: "",
-      projects: "",
-      ipec_jst: "",
-      outreach_activities: "",
-      about_ipec_tbi: "",
-      tbi_services: "",
-      funded_projects: "",
-      our_startups: "",
-      tbi_events: "",
-      tbi_recognitions: "",
-      training_and_placement: "",
-      placement_director_message: "",
-      placement_testimonials: "",
-      recruiters: "",
-      placement_guidelines_policy: "",
-      placement_gallery: "",
-      placement_record: "",
-      contact_us: "",
-    },
+    defaultValues: initialData || EMPTY_DEFAULTS,
   });
+
+  // react-hook-form only reads `defaultValues` once, at mount. If the
+  // server re-renders this page with a new `initialData` prop (e.g. a
+  // background revalidation from another session) and the admin isn't
+  // actively mid-edit, sync the form to it.
+  useEffect(() => {
+    if (initialData && !form.formState.isDirty) {
+      form.reset(initialData);
+    }
+  }, [initialData, form]);
 
   const onSubmit = (values: LinksFormValues) => {
     setStatus(null);
     startTransition(async () => {
       const result = await upsertLinks(values);
       setStatus(result);
+      if (result.success) {
+        // Re-baseline the form on the values that were just persisted,
+        // so it's no longer "dirty" and reflects the true saved state.
+        form.reset(values);
+      }
     });
   };
-
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}

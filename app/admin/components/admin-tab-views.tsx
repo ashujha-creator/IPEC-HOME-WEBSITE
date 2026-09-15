@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import  Gallery  from "./gallery/Gallery";
+import Gallery from "./gallery/Gallery";
 import UpdateHome from "./home-page";
 import AddmissionPage from "./addmission-page";
 import Pages from "./(pages)/Pages";
@@ -26,7 +26,7 @@ export function AdminTabViews({ activeTab }: TabViewsProps) {
 
     case "about":
       return (
-        <Card>
+        <Card className="w-full h-full">
           <CardHeader>
             <CardTitle>About Organization</CardTitle>
             <CardDescription>

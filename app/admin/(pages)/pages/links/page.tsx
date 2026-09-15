@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
+import { getLinks } from "@/app/actions/links";
 import { LinkManagementForm } from "@/components/ui/LinkManagementForm";
 import { LinksFormValues } from "@/lib/vaildation/links";
 
@@ -8,15 +9,15 @@ export const metadata = {
 };
 
 export default async function LinksAdminPage() {
-  // Fetch existing links entry (using first record as single configuration document)
-  const existingLinks = await prisma.links.findFirst();
+  const existingLinks = await getLinks();
 
-  // Map null values to empty strings to avoid React uncontrolled-to-controlled input warnings
   const formattedData: LinksFormValues | null = existingLinks
-    ? Object.entries(existingLinks).reduce((acc, [key, value]) => {
-        acc[key as keyof LinksFormValues] = (value as string) ?? "";
-        return acc;
-      }, {} as LinksFormValues)
+    ? ((): LinksFormValues => {
+        const { createdAt, updatedAt, ...linksData } = existingLinks;
+        return Object.fromEntries(
+          Object.entries(linksData).map(([key, value]) => [key, value ?? ""]),
+        ) as LinksFormValues;
+      })()
     : null;
 
   return (

@@ -48,6 +48,20 @@ const menuItems: MenuItem[] = [
     icon: Trash2,
     count: 2,
   },
+  {
+    title: "Playgrounds",
+    description: "Playground to design the Web pages.",
+    href: "/editors",
+    icon: Trash2,
+    count: 2,
+  },
+  {
+    title: "Web Pages",
+    description: "View pages you create!.",
+    href: "/playground",
+    icon: Trash2,
+    count: 2,
+  },
 ];
 
 export default function Pages() {

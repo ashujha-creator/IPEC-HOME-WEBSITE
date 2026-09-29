@@ -129,41 +129,6 @@ export const defaultItems: NavItem[] = [
     href: "/academics",
     children: [
       {
-        label: "Academic Calendar",
-        href: "/academics/calendar",
-        dbKey: "academic_calendar",
-      },
-      {
-        label: "Important Functionaries",
-        href: "/academics/functionaries",
-        dbKey: "important_functionaries",
-      },
-      {
-        label: "Syllabus & Ordinances",
-        href: "/academics/syllabus-ordinances",
-        dbKeys: ["syllabus", "ordinances"],
-      },
-      {
-        label: "Examinations",
-        href: "/academics/examinations",
-        dbKey: "examination",
-      },
-      {
-        label: "Strategic Plan (2023-2029)",
-        href: "/academics/strategic-plan",
-        dbKey: "strategic_plan",
-      },
-      {
-        label: "Best Practices",
-        href: "/academics/best-practices",
-        dbKey: "best_practices",
-      },
-      {
-        label: "International Conferences",
-        href: "/academics/international-conferences",
-        dbKey: "international_conferences",
-      },
-      {
         label: "Courses",
         href: "/academics/courses",
         children: [
@@ -214,54 +179,43 @@ export const defaultItems: NavItem[] = [
         ],
       },
       {
-        label: "IQAC",
-        href: "/academics/iqac",
-        children: [
-          { label: "IQAC MOM", href: "/academics/iqac/mom", dbKey: "iqac_mom" },
-          {
-            label: "SSR Cycle 2",
-            href: "/academics/iqac/ssr-cycle-2",
-            dbKey: "ssr_cycle",
-          },
-          {
-            label: "Extended Profile",
-            href: "/academics/iqac/extended-profile",
-            dbKey: "extended_profile",
-          },
-          {
-            label: "Criterion 1 - 7",
-            href: "/academics/iqac/criterions",
-            dbKeys: [
-              "criterion_1",
-              "criterion_2",
-              "criterion_3",
-              "criterion_4",
-              "criterion_5",
-              "criterion_6",
-              "criterion_7",
-            ],
-          },
-          {
-            label: "NAAC Grade Sheet Cycle 2",
-            href: "/academics/iqac/naac-grade-sheet",
-            dbKey: "naac_grade_sheet",
-          },
-          {
-            label: "IIQA",
-            href: "/academics/iqac/iiqa",
-            dbKey: "iiqa_reports",
-          },
-          {
-            label: "Institutional Distinctiveness",
-            href: "/academics/iqac/institutional-distinctiveness",
-            dbKey: "institutional_distinctiveness",
-          },
-          {
-            label: "Stakeholder Feedback & ATR",
-            href: "/academics/iqac/feedback-atr",
-            dbKeys: ["feedback", "atr"],
-          },
-        ],
+        label: "Academic Calendar",
+        href: "/academics/calendar",
+        dbKey: "academic_calendar",
+      },
+      {
+        label: "Important Functionaries",
+        href: "/academics/functionaries",
+        dbKey: "important_functionaries",
+      },
+      {
+        label: "Syllabus & Ordinances",
+        href: "/academics/syllabus-ordinances",
+        dbKeys: ["syllabus", "ordinances"],
+      },
+      {
+        label: "Examinations",
+        href: "/academics/examinations",
+        dbKey: "examination",
+      },
+      {
+        label: "Strategic Plan (2023-2029)",
+        href: "/academics/strategic-plan",
+        dbKey: "strategic_plan",
+      },
+      {
+        label: "Best Practices",
+        href: "/academics/best-practices",
+        dbKey: "best_practices",
+      },
+      {
+        label: "International Conferences",
+        href: "/academics/international-conferences",
+        dbKey: "international_conferences",
+      },
+      {
+        label: "NPTEL",
+        href: "/NPTEL",
       },
     ],
   },
@@ -317,9 +271,13 @@ export const defaultItems: NavItem[] = [
     ],
   },
   {
-    label: "For Students",
+    label: "Students",
     href: "/for-students",
     children: [
+      {
+        label: "Announcements",
+        href: "/annoncement-for-students",
+      },
       {
         label: "Events & Fests",
         href: "/for-students/events",
@@ -341,6 +299,7 @@ export const defaultItems: NavItem[] = [
           },
         ],
       },
+
       {
         label: "Scholarships",
         href: "/for-students/scholarships",
@@ -437,6 +396,56 @@ export const defaultItems: NavItem[] = [
             dbKey: "notices_for_passout_students",
           },
         ],
+      },
+    ],
+  },
+  {
+    label: "IQAC",
+    href: "/academics/iqac",
+    children: [
+      { label: "IQAC MOM", href: "/academics/iqac/mom", dbKey: "iqac_mom" },
+      {
+        label: "SSR Cycle 2",
+        href: "/academics/iqac/ssr-cycle-2",
+        dbKey: "ssr_cycle",
+      },
+      {
+        label: "Extended Profile",
+        href: "/academics/iqac/extended-profile",
+        dbKey: "extended_profile",
+      },
+      {
+        label: "Criterion 1 - 7",
+        href: "/academics/iqac/criterions",
+        dbKeys: [
+          "criterion_1",
+          "criterion_2",
+          "criterion_3",
+          "criterion_4",
+          "criterion_5",
+          "criterion_6",
+          "criterion_7",
+        ],
+      },
+      {
+        label: "NAAC Grade Sheet Cycle 2",
+        href: "/academics/iqac/naac-grade-sheet",
+        dbKey: "naac_grade_sheet",
+      },
+      {
+        label: "IIQA",
+        href: "/academics/iqac/iiqa",
+        dbKey: "iiqa_reports",
+      },
+      {
+        label: "Institutional Distinctiveness",
+        href: "/academics/iqac/institutional-distinctiveness",
+        dbKey: "institutional_distinctiveness",
+      },
+      {
+        label: "Stakeholder Feedback & ATR",
+        href: "/academics/iqac/feedback-atr",
+        dbKeys: ["feedback", "atr"],
       },
     ],
   },

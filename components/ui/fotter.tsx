@@ -102,6 +102,7 @@ const defaultLinkColumns: FooterLinkColumn[] = [
     heading: "Important Links",
     links: [
       { label: "Inderprastha Business School", href: "#" },
+      { label: "Mandatory disclosure", href: "#" },
       { label: "IQAC", href: "#" },
       { label: "Anti-Ragging Compliance", href: "#" },
       { label: "Career Openings", href: "#" },

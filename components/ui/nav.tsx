@@ -245,7 +245,7 @@ export default function Navbar({
       aria-label="Primary"
       className={`relative z-40 bg-[#0B1550] ${className}`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex  items-center justify-between  sm:px-6 lg:px-4">
         <ul className="hidden flex-1 items-center justify-center space-x-1 lg:flex">
           {items.map((item) => (
             <DesktopNavItem
